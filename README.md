@@ -1,4 +1,4 @@
-# Discord Selfbot
+# Skibidi Selfbot
 
 This is a selfbot for Discord, developed using `discord.py-self`. This selfbot includes various commands for managing a Discord server, such as deleting channels, banning users, spamming messages, and more. Note that using selfbots in Discord is against their Terms of Service, and your account may be banned for using them.
 
@@ -25,7 +25,7 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 
 ## Description
 
-This Discord Selfbot, developed using `discord.py-self`, is designed to automate and manage various tasks within a Discord server. It provides a range of commands for server administration, including managing channels, roles, and users, as well as performing various automated actions like spamming messages or creating webhooks. Additionally, it includes commands for interacting with the Bungie API to fetch Destiny 2 raid completion data.
+This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate and manage various tasks within a Discord server. It provides a range of commands for server administration, including managing channels, roles, and users, as well as performing various automated actions like spamming messages or creating webhooks. Additionally, it includes commands for interacting with the Bungie API to fetch Destiny 2 raid completion data.
 
 **Note**: Using selfbots violates Discord's Terms of Service and can lead to account suspension or banning. This project is for educational purposes only and should be used with caution. Always adhere to Discord’s guidelines and terms when developing and using bots.
 
@@ -44,13 +44,15 @@ This Discord Selfbot, developed using `discord.py-self`, is designed to automate
     pip install discord.py-self requests beautifulsoup4 aiohttp pyfiglet
     ```
 
-3. **Create a `config.json` file** in the same directory as the script with the following structure:
+3. **Create a `config.json` file** in the same directory as the script. This file should contain your Discord bot token in the following format:
 
     ```json
     {
         "TOKEN": "your_discord_token"
     }
     ```
+
+   If the `config.json` file does not exist, the bot will prompt you to enter your token and will create the file for you automatically.
 
 4. **Run the bot**:
 
@@ -89,3 +91,4 @@ This Discord Selfbot, developed using `discord.py-self`, is designed to automate
 
 You can find the repository for this project at: [https://github.com/benson7618/skibidiselfbot.git](https://github.com/benson7618/skibidiselfbot.git)
 
+-Lawcan
