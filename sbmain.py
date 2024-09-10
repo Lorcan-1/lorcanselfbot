@@ -106,6 +106,9 @@ massban - bans all members in the server with a reason
 webhookmessage - sends a message via webhook with a specified username
 webhookspam - spams a message a specified number of times using webhooks
 nuke - deletes all channels, creates new channels, deletes all roles, creates new roles, and bans all members
+spamroles - creates a specified number of roles with a given name
+ascii - generates ASCII art for a given message
+lastraid - fetches the most recent raid completion for a given Destiny username
 ```''')
 
 @bot.command()
