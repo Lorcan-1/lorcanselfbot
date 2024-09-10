@@ -27,7 +27,7 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 
 This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate and manage various tasks within a Discord server. It provides a range of commands for server administration, including managing channels, roles, and users, as well as performing various automated actions like spamming messages or creating webhooks. Additionally, it includes commands for interacting with the Bungie API to fetch Destiny 2 raid completion data.
 
-**Note**: Using selfbots violates Discord's Terms of Service and can lead to account suspension or banning. This project is for educational purposes only and should be used with caution. Always adhere to Discord’s guidelines and terms when developing and using bots.
+**Note**: Using selfbots violates Discord's Terms of Service and can lead to account suspension or banning.
 
 ## Setup
 
