@@ -346,7 +346,6 @@ async def spamroles(ctx, number: int, role_name: str):
     role_amount = 0
     while role_amount < number:
         try:
-            # Create the role with the specified name
             await ctx.guild.create_role(name=role_name)
             role_amount += 1
         except discord.Forbidden:
