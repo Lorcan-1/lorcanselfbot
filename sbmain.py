@@ -5,7 +5,6 @@ import requests
 import json
 import asyncio 
 from bs4 import BeautifulSoup
-import aiohttp
 import json
 import os
 from pathlib import Path
