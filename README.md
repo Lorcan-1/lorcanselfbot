@@ -57,7 +57,7 @@ This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate
 4. **Run the bot**:
 
     ```bash
-    python bot.py
+    python sbmain.py
     ```
 
 ## Commands
