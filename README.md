@@ -22,6 +22,8 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`search [query]`**: Searches Google for a query.
 - **`ascii [message]`**: Converts a message to ASCII art.
 - **`lastraid [username]`**: Fetches the most recent raid completion for a Destiny 2 user.
+- **`math [math_expression}`** Finishes an expression for you using the eval function
+- **`weather [city}`** Fetches the current weather
 
 ## Description
 
@@ -35,13 +37,14 @@ This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate
 
     ```bash
     git clone https://github.com/benson7618/skibidiselfbot.git
+    
     cd skibidiselfbot
     ```
 
 2. **Install dependencies**:
 
     ```bash
-    pip install discord.py-self requests beautifulsoup4 aiohttp pyfiglet
+    pip install -r requirements.txt
     ```
 
 3. **Create a `config.json` file** in the same directory as the script. This file should contain your Discord bot token in the following format:
@@ -80,6 +83,10 @@ This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate
 - **`search [query]`**: Searches Google for a query.
 - **`ascii [message]`**: Converts a message to ASCII art.
 - **`lastraid [username]`**: Fetches the most recent raid completion for a Destiny 2 user.
+- **`math [expression]`**: Evaluates a mathematical expression.
+- **`weather [city_name]`**: Provides the current weather for a specified city.
+- **`ipping [TARGET_IP]`**: Pings an IP address to check connectivity.
+
 
 ## Notes
 
