@@ -623,5 +623,15 @@ async def weather(ctx, city_name: str):
         weatherinfo = f"An error occurred while fetching weather data: {str(e)}"
     
     await ctx.send(weatherinfo)
+    
+@bot.command()
+async def math(ctx, numbers: str):
+    await ctx.message.delete()
+    numbers = numbers.replace('x', '*').replace('÷', '/')
+    try:
+        result = eval(numbers)
+        await ctx.send(f"{numbers} = {result}")
+    except Exception as e:
+        await ctx.send(f"Error: {e}")
 
 bot.run(TOKEN)
