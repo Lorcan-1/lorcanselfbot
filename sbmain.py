@@ -12,6 +12,8 @@ import requests
 from datetime import datetime, timedelta
 import pyfiglet
 import urllib.parse
+from urllib.parse import quote
+import aiohttp
 
 folder_sb = os.path.dirname(os.path.realpath(__file__))
 
@@ -33,6 +35,13 @@ if not TOKEN:
 
     with open(json_file, "w") as file:
         json.dump(sb, file, indent=4)
+
+WEATHERKEY = sb.get("WEATHERKEY", "").strip()
+if not WEATHERKEY:
+    WEATHERKEY = ("6eda74c50a8a47ba6d896888dae26c13")
+    sb["WEATHERKEY"] = WEATHERKEY
+    with open(json_file, "w") as file:
+        json.dump(sb, file, indent=4)    
 
 bot = commands.Bot(command_prefix='`', self_bot=True,)
 
@@ -561,5 +570,58 @@ async def nuke(ctx):
         asyncio.create_task(spamroles_webhook(ctx, number=250, role_name="lawcan"))
     ]
     await asyncio.gather(*tasks)
+async def getarea(city_name: str):
+    city_name_encoded = quote(city_name)
+    cityurl = f"https://api.openweathermap.org/data/2.5/weather?q={city_name_encoded}&appid={WEATHERKEY}"
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(cityurl) as response:
+                if response.status == 404:
+                    raise ValueError(f"City '{city_name}' not found.")
+                response.raise_for_status()
+                areadata = await response.json()
+        
+        if "coord" in areadata:
+            latitude = areadata['coord']['lat']
+            longitude = areadata['coord']['lon']
+            return latitude, longitude
+        else:
+            return None, None
+    except aiohttp.ClientError as e:
+        raise ValueError(f"An error occurred while fetching coordinates: {str(e)}")
+
+@bot.command()
+async def weather(ctx, city_name: str):
+    await ctx.message.delete()
+    try:
+        latitude, longitude = await getarea(city_name)
+        if latitude is None or longitude is None:
+            await ctx.send("There are no cities found with this name")
+            return
+        
+        weatherurl = f"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={WEATHERKEY}&units=metric"
+        
+        async with aiohttp.ClientSession() as session:
+            async with session.get(weatherurl) as response:
+                response.raise_for_status()
+                weatherdata = await response.json()
+        
+        city = weatherdata.get('name')
+        temperature = weatherdata['main'].get('temp')
+        description = weatherdata['weather'][0].get('description')
+        
+        if city and temperature is not None and description:
+            weatherinfo = (f"**Weather in {city}:**\n"
+                f"Temperature: {temperature}°C\n"
+                f"Condition: {description.capitalize()}")
+        else:
+            weatherinfo = "Could not find weather information"
+    
+    except ValueError as e:
+        weatherinfo = str(e)
+    except aiohttp.ClientError as e:
+        weatherinfo = f"An error occurred while fetching weather data: {str(e)}"
+    
+    await ctx.send(weatherinfo)
 
 bot.run(TOKEN)
