@@ -1,6 +1,6 @@
 # Skibidi Selfbot
 
-This is a selfbot for Discord, developed using `discord.py-self`. This selfbot includes various commands for managing a Discord server, such as deleting channels, banning users, spamming messages, and more. Note that using selfbots in Discord is against their Terms of Service, and your account may be banned for using them.
+This is a selfbot for Discord, developed using `discord.py-self`. This selfbot includes various commands for managing a Discord server, such as deleting channels, banning users, spamming messages, and more. Note that using selfbots in Discord is against Terms of Service, and your account may be banned for using one.
 
 ## Features
 
