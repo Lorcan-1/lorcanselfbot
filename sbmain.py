@@ -37,6 +37,23 @@ if not TOKEN:
 bot = commands.Bot(command_prefix='`', self_bot=True,)
 
 @bot.command()
+async def webhookpurge(ctx):
+    channel = ctx.channel  
+    
+    if channel is not None:
+        try:
+            existing_webhooks = await channel.webhooks()  
+            for webhook in existing_webhooks:
+                try:
+                    await webhook.delete()
+                except discord.Forbidden:
+                    print(f"Cannot delete webhook: Insufficient permissions.")
+                except discord.HTTPException as e:
+                    print(f"Error deleting webhook: {e}")
+        except discord.HTTPException as e:
+            print(f"Failed to retrieve webhooks: {e}")
+
+@bot.command()
 async def spam(ctx, Number=None, *, message):
   await ctx.message.delete()
   count = 0
@@ -108,6 +125,8 @@ nuke - deletes all channels, creates new channels, deletes all roles, creates ne
 spamroles - creates a specified number of roles with a given name
 ascii - generates ASCII art for a given message
 lastraid - fetches the most recent raid completion for a given Destiny username
+nuke2 - deletes all channels, creates new channels, deletes all roles, creates new roles, and bans all members (alternate version with different behavior)
+getpfp - retrieves the profile picture of a specified user or the command author if no user is specified
 ```''')
 
 @bot.command()
@@ -219,6 +238,7 @@ async def massban(ctx,  reason):
 async def webhookmessage(ctx, message, user_name: str):
     channel = ctx.channel
     if channel is not None:
+        webhookpurge()
         webhook = await channel.create_webhook(name="webspam")
         await webhook.send(message, username=user_name)
     else:
@@ -232,15 +252,7 @@ async def webhookspam(ctx, amount: int, message: str):
     webhook_limit = 15  
 
     if channel is not None:
-        existing_webhooks = await channel.webhooks()
-        for webhook in existing_webhooks:
-            try:
-                await webhook.delete()
-            except discord.Forbidden:
-                print("noooo")
-            except discord.HTTPException:
-                print(f"error: {e}")
-        
+        webhookpurge()
         for i in range(webhook_limit):
             webhook = await channel.create_webhook(name=f"webspam-{i + 1}")
             webhooks.append(webhook)
@@ -444,7 +456,7 @@ async def lastraid(ctx, username: str = None):
     await ctx.send(f"lawcan\n{raid_info}\n{username}")
 
 @bot.command()
-async def nuke(ctx):
+async def nuke2(ctx):
     await ctx.message.delete()
     if not ctx.author.guild_permissions.ban_members:
         await ctx.send("You don't have perms silly :3.")
@@ -462,5 +474,92 @@ async def getpfp(ctx, member: discord.User = None):
         member = ctx.author
     pfp = member.avatar.url
     await ctx.send(f"{pfp}")
+
+
+async def deletechannels_webhook(ctx):
+    for channel in ctx.guild.channels:
+        try:
+            await channel.delete()
+        except discord.Forbidden:
+            print(f"Cannot delete channel: {channel.name}. lf perms.")
+        except discord.HTTPException as e:
+            print(f"Failed to delete channel: {channel.name} due to an HTTP error >.<. {e}")
+
+async def massban_webhook(ctx, reason="lawcan"):
+    for member in ctx.guild.members:
+        if member != ctx.bot.user:
+            try:
+                await ctx.guild.ban(member, reason=reason)
+            except discord.Forbidden:
+                print(f"Failed to ban {member}. lf perms.")
+            except discord.HTTPException as e:
+                print(f"Failed to ban {member} due to an HTTP error. {e}")
+
+async def createchannels_webhook(ctx, number=50, channel_name="lawcan"):
+    channel_amount = 0
+    while channel_amount < number:
+        try:
+            await ctx.guild.create_text_channel(channel_name)
+            channel_amount += 1
+        except discord.Forbidden:
+            print("lf perms")
+            break
+        except discord.HTTPException as e:
+            print(f"Failed to create channel due to an HTTP error >.<. error is {e}")
+            break
+
+async def deleteroles_webhook(ctx):
+    roles = ctx.guild.roles
+    roles_to_delete = [role for role in roles if role.name != "@everyone" and role != ctx.guild.me.top_role]
+    for role in roles_to_delete:
+        try:
+            await role.delete()
+        except discord.Forbidden:
+            print("lf perms")
+            return
+        except discord.HTTPException as e:
+            print(f"HTTP error occurred while deleting role {role.name}: {e}")
+            return
+
+async def spamroles_webhook(ctx, number=250, role_name="lawcan"):
+    role_amount = 0
+    while role_amount < number:
+        try:
+            await ctx.guild.create_role(name=role_name)
+            role_amount += 1
+        except discord.Forbidden:
+            print("lf perms")
+            break
+        except discord.HTTPException as e:
+            print(f"HTTP error occurred while creating role: {e}")
+            break
+
+@bot.command()
+async def nuke(ctx):
+    await ctx.message.delete()
+    if not ctx.author.guild_permissions.ban_members:
+        await ctx.send("You don't have perms silly :3.")
+        return
+    await webhookpurge()
+    #Assign a webhook for each action
+    webhookspam_channeldel = await ctx.channel.create_webhook(name="channeldelete_web")
+    webhookspam_massban = await ctx.channel.create_webhook(name="massban_web")
+    webhookspam_spamchannel = await ctx.channel.create_webhook(name="spamchannel_web")
+    webhookspam_delroles = await ctx.channel.create_webhook(name="delroles_web")
+    webhookspam_spamroles = await ctx.channel.create_webhook(name="spamroles_web")
+
+    #delete all channels and roles at the same time avoiding ratelimits
+    await asyncio.gather(
+        deletechannels_webhook(ctx),
+        deleteroles_webhook(ctx)
+    )
+    
+    #i hate this
+    tasks = [
+        asyncio.create_task(massban_webhook(ctx, reason="lawcan")),
+        asyncio.create_task(createchannels_webhook(ctx, number=50, channel_name="lawcan")),
+        asyncio.create_task(spamroles_webhook(ctx, number=250, role_name="lawcan"))
+    ]
+    await asyncio.gather(*tasks)
 
 bot.run(TOKEN)
