@@ -238,7 +238,7 @@ async def massban(ctx,  reason):
 async def webhookmessage(ctx, message, user_name: str):
     channel = ctx.channel
     if channel is not None:
-        webhookpurge()
+        await webhookpurge()
         webhook = await channel.create_webhook(name="webspam")
         await webhook.send(message, username=user_name)
     else:
@@ -252,7 +252,7 @@ async def webhookspam(ctx, amount: int, message: str):
     webhook_limit = 15  
 
     if channel is not None:
-        webhookpurge()
+        await webhookpurge()
         for i in range(webhook_limit):
             webhook = await channel.create_webhook(name=f"webspam-{i + 1}")
             webhooks.append(webhook)
