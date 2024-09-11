@@ -14,6 +14,7 @@ import pyfiglet
 import urllib.parse
 from urllib.parse import quote
 import aiohttp
+from ping3 import ping
 
 folder_sb = os.path.dirname(os.path.realpath(__file__))
 
@@ -631,6 +632,17 @@ async def math(ctx, numbers: str):
     try:
         result = eval(numbers)
         await ctx.send(f"{numbers} = {result}")
+    except Exception as e:
+        await ctx.send(f"Error: {e}")
+@bot.command()
+async def ipping(ctx, ip: str):
+    await ctx.message.delete()
+    try:
+        response_time = ping(ip)
+        if response_time is None:
+            await ctx.send("Response timed out.")
+        else:
+            await ctx.send(f"Ping: replied in{response_time:.2f} seconds.")
     except Exception as e:
         await ctx.send(f"Error: {e}")
 
