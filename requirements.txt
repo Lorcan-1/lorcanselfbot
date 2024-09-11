@@ -1,0 +1,6 @@
+discord.py
+requests
+beautifulsoup4
+pyfiglet
+aiohttp
+ping3
