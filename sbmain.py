@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 import discord
 from discord.ext import commands
-import requests
 import json
 import asyncio 
 from bs4 import BeautifulSoup
