@@ -631,6 +631,7 @@ async def math(ctx, numbers: str):
         await ctx.send(f"{numbers} = {result}")
     except Exception as e:
         await ctx.send(f"Error: {e}")
+        
 @bot.command()
 async def ipping(ctx, ip: str):
     await ctx.message.delete()
@@ -642,5 +643,16 @@ async def ipping(ctx, ip: str):
             await ctx.send(f"Ping: replied in{response_time:.2f} seconds.")
     except Exception as e:
         await ctx.send(f"Error: {e}")
+        
+@bot.command()
+async def getfromjson(ctx, json_file, key, value):
+    try:
+        with open(json_file, "r") as file:
+            sb = json.load(file)
+    except FileNotFoundError:
+        sb = {}
+    sb[key] = value.strip()
+    with open(json_file, "w") as file:
+        json.dump(sb, file, indent=4)
 
 bot.run(TOKEN)
