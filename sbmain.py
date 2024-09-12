@@ -5,11 +5,9 @@ import requests
 import json
 import asyncio 
 from bs4 import BeautifulSoup
-import json
 import os
 from pathlib import Path
 import requests
-from datetime import datetime, timedelta
 import pyfiglet
 import urllib.parse
 from urllib.parse import quote
