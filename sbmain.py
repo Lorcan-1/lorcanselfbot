@@ -640,7 +640,7 @@ async def ipping(ctx, ip: str):
         if response_time is None:
             await ctx.send("Response timed out.")
         else:
-            await ctx.send(f"Ping: replied in{response_time:.2f} seconds.")
+            await ctx.send(f"Ping: replied in{response_time:.3f} seconds.")
     except Exception as e:
         await ctx.send(f"Error: {e}")
         
