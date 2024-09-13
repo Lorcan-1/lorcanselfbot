@@ -1,4 +1,4 @@
-# Skibidi Selfbot
+# Lorcan Selfbot
 
 This is a selfbot for Discord, developed using `discord.py-self`. This selfbot includes various commands for managing a Discord server, such as deleting channels, banning users, spamming messages, and more. Note that using selfbots in Discord is against Terms of Service, and your account may be banned for using one.
 
@@ -29,7 +29,7 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 
 ## Description
 
-This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate and manage various tasks within a Discord server. It provides a range of commands for server administration, including managing channels, roles, and users, as well as performing various automated actions like spamming messages or creating webhooks. Additionally, it includes commands for interacting with the Bungie API to fetch Destiny 2 raid completion data.
+This Lorcan Selfbot, developed using `discord.py-self`, is designed to automate and manage various tasks within a Discord server. It provides a range of commands for server administration, including managing channels, roles, and users, as well as performing various automated actions like spamming messages or creating webhooks. Additionally, it includes commands for interacting with the Bungie API to fetch Destiny 2 raid completion data.
 
 **Note**: Using selfbots violates Discord's Terms of Service and can lead to account suspension or banning.
 
@@ -38,9 +38,9 @@ This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate
 1. **Clone the repository**:
 
     ```bash
-    git clone https://github.com/benson7618/skibidiselfbot.git
+    git clone https://github.com/benson7618/Lorcanselfbot.git
     
-    cd skibidiselfbot
+    cd Lorcanselfbot
     ```
 
 2. **Install dependencies**:
@@ -73,6 +73,6 @@ This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate
 
 ## Repository
 
-You can find the repository for this project at: [https://github.com/benson7618/skibidiselfbot.git](https://github.com/benson7618/skibidiselfbot.git)
+You can find the repository for this project at: [https://github.com/benson7618/Lorcanselfbot.git](https://github.com/benson7618/Lorcanselfbot.git)
 
 -Lawcan
