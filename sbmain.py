@@ -136,36 +136,7 @@ nuke2 - deletes all channels, creates new channels, deletes all roles, creates n
 getpfp - retrieves the profile picture of a specified user or the command author if no user is specified
 ```''')
 
-@bot.command()
-async def lookup(ctx, TARGET_IP=None):
-    if TARGET_IP:
-        try:
-            RESPONSE = requests.get('http://ip-api.com/json/{}'.format(TARGET_IP))
-            CONTENT = json.loads(RESPONSE.text)
 
-            if str(CONTENT['status']) == 'success':
-                await ctx.message.delete()
-                one = TARGET_IP
-                two = CONTENT['isp']
-                three = CONTENT['city']
-                four = CONTENT['regionName']
-                five = CONTENT['lat']
-                six = CONTENT['lon']
-
-                await ctx.send('''```py
-IP: {} 
-ISP: {}
-City: {}
-Region: {}
-Coordinates: {} LON, {} LAT
-```'''.format(one, two, three, four, five, six))
-            else:
-                if str(CONTENT['message']) == 'invalid query':
-                  await ctx.message.delete()
-                  await ctx.send('``INVALID IP``')
-        except:
-            await ctx.send('`An error has occurred.`')
-        return
 
 @bot.command()
 async def ban(ctx, member: discord.Member, *, reason=None):
@@ -316,6 +287,37 @@ async def deleteroles(ctx):
         except discord.HTTPException as e:
             await ctx.send(f"HTTP error occurred while deleting role {role.name}: {e}")
             return
+
+@bot.command()
+async def lookup(ctx, TARGET_IP=None):
+    if TARGET_IP:
+        try:
+            RESPONSE = requests.get('http://ip-api.com/json/{}'.format(TARGET_IP))
+            CONTENT = json.loads(RESPONSE.text)
+
+            if str(CONTENT['status']) == 'success':
+                await ctx.message.delete()
+                one = TARGET_IP
+                two = CONTENT['isp']
+                three = CONTENT['city']
+                four = CONTENT['regionName']
+                five = CONTENT['lat']
+                six = CONTENT['lon']
+
+                await ctx.send('''```py
+IP: {} 
+ISP: {}
+City: {}
+Region: {}
+Coordinates: {} LON, {} LAT
+```'''.format(one, two, three, four, five, six))
+            else:
+                if str(CONTENT['message']) == 'invalid query':
+                  await ctx.message.delete()
+                  await ctx.send('``INVALID IP``')
+        except:
+            await ctx.send('`An error has occurred.`')
+        return
 
 @bot.command()
 async def search(ctx, *, query: str):
