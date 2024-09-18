@@ -1,4 +1,3 @@
-#imports as this is a library extensive project
 from datetime import datetime, timedelta
 import discord
 from discord.ext import commands
@@ -13,6 +12,7 @@ import urllib.parse
 from urllib.parse import quote
 import aiohttp
 from ping3 import ping
+#imports as this is a library extensive project
 
 folder_sb = os.path.dirname(os.path.realpath(__file__)) # checks for config.json within the file path if it is missing creates then reads from the file
 json_file = os.path.join(folder_sb, 'config.json')
