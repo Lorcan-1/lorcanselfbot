@@ -632,7 +632,7 @@ async def math(ctx, numbers: str): # calculates mathmatical equations using the 
         await ctx.send(f"Error: {e}")
         
 @bot.command()
-async def ipping(ctx, ip: str): # pings an ip and send the response name
+async def ipping(ctx, ip: str): # pings an ip and send the response time
     await ctx.message.delete()
     try:
         response_time = ping(ip)
@@ -644,7 +644,7 @@ async def ipping(ctx, ip: str): # pings an ip and send the response name
         await ctx.send(f"Error: {e}")
         
 @bot.command()
-async def getfromjson(ctx, json_file, key, value): # writes values to the json file incase you wish to change token or weathermap api key without opening the file
+async def getfromjson(ctx, json_file, key, value): # writes values to the json file incase you wish to change token or weathermap api key without opening the config file
     try:
         with open(json_file, "r") as file:
             sb = json.load(file)
