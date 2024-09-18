@@ -1,3 +1,4 @@
+#imports as this is a library extensive project
 from datetime import datetime, timedelta
 import discord
 from discord.ext import commands
@@ -13,10 +14,8 @@ from urllib.parse import quote
 import aiohttp
 from ping3 import ping
 
-folder_sb = os.path.dirname(os.path.realpath(__file__))
-
+folder_sb = os.path.dirname(os.path.realpath(__file__)) # checks for config.json within the file path if it is missing creates then reads from the file
 json_file = os.path.join(folder_sb, 'config.json')
-
 if os.path.exists(json_file):
 
     with open(json_file, 'r') as file:
@@ -24,8 +23,8 @@ if os.path.exists(json_file):
 else:
     sb = {}
 
-TOKEN = sb.get("TOKEN", "").strip()
 
+TOKEN = sb.get("TOKEN", "").strip() # checks for TOKEN within config.json if there is no TOKEN prompts the user to enter it then writes to the file
 if not TOKEN:
     TOKEN = input("Enter your token >.< ")
     sb["TOKEN"] = TOKEN
@@ -34,17 +33,17 @@ if not TOKEN:
     with open(json_file, "w") as file:
         json.dump(sb, file, indent=4)
 
-WEATHERKEY = sb.get("WEATHERKEY", "").strip()
+WEATHERKEY = sb.get("WEATHERKEY", "").strip() # checks for WEATHERKEY within config.json if there is no WEATHERKEY sets a preset api key until replaced with your own
 if not WEATHERKEY:
     WEATHERKEY = ("6eda74c50a8a47ba6d896888dae26c13")
     sb["WEATHERKEY"] = WEATHERKEY
     with open(json_file, "w") as file:
         json.dump(sb, file, indent=4)    
 
-bot = commands.Bot(command_prefix='`', self_bot=True,)
+bot = commands.Bot(command_prefix='`', self_bot=True,) # sets the bot variable and sets the prefix for the bot
 
 @bot.command()
-async def webhookpurge(ctx):
+async def webhookpurge(ctx): # checks if the message was sent in a channel then deletes any existing webhooks 
     channel = ctx.channel  
     
     if channel is not None:
@@ -61,7 +60,7 @@ async def webhookpurge(ctx):
             print(f"Failed to retrieve webhooks: {e}")
 
 @bot.command()
-async def spam(ctx, Number=None, *, message):
+async def spam(ctx, Number=None, *, message): # sends a message the amount of times specified
   await ctx.message.delete()
   count = 0
   while count < int(Number):
@@ -69,7 +68,7 @@ async def spam(ctx, Number=None, *, message):
       count = count + 1
 
 @bot.command()
-async def meow(ctx):
+async def meow(ctx): # sends an ascii image of a cat
     await ctx.message.delete()
     await ctx.send('''```
        ,
@@ -103,14 +102,14 @@ async def meow(ctx):
 ```''')
 
 @bot.command()
-async def deletechannels(ctx):
+async def deletechannels(ctx): # deletes all channels in the guild the message was sent requires admin (needs exceptions adding)
     guild = ctx.guild
     for channel in guild.channels:
         await channel.delete()
     return
 
 @bot.command()
-async def commands(ctx):
+async def commands(ctx): # a guide to commands the bot has
     await ctx.message.delete()
     await ctx.send('''```
 - skibidi toilet -
@@ -136,29 +135,57 @@ nuke2 - deletes all channels, creates new channels, deletes all roles, creates n
 getpfp - retrieves the profile picture of a specified user or the command author if no user is specified
 ```''')
 
+@bot.command()
+async def iplookup(ctx, TARGET_IP=None): # looks up an ip address using the ip-api api
+    if TARGET_IP:
+        try:
+            RESPONSE = requests.get('http://ip-api.com/json/{}'.format(TARGET_IP))
+            CONTENT = json.loads(RESPONSE.text)
 
+            if str(CONTENT['status']) == 'success':
+                await ctx.message.delete()
+                one = TARGET_IP
+                two = CONTENT['isp']
+                three = CONTENT['city']
+                four = CONTENT['regionName']
+                five = CONTENT['lat']
+                six = CONTENT['lon']
+
+                await ctx.send('''```py
+IP: {} 
+ISP: {}
+City: {}
+Region: {}
+Coordinates: {} LON, {} LAT
+```'''.format(one, two, three, four, five, six))
+            else:
+                if str(CONTENT['message']) == 'invalid query':
+                  await ctx.message.delete()
+                  await ctx.send('``INVALID IP``')
+        except:
+            await ctx.send('`An error has occurred.`')
+        return
 
 @bot.command()
-async def ban(ctx, member: discord.Member, *, reason=None):
+async def ban(ctx, member: discord.Member, *, reason=None): # bans the user pinged with no reason
     await member.ban(reason=reason)
-    await ctx.send(f"{member} has been banned/kicked for {reason}")
     await ctx.message.delete()
     return
 
 @bot.command()
-async def kick(ctx, member: discord.Member):
+async def kick(ctx, member: discord.Member): # kicks a member
     await member.kick()
     await ctx.message.delete()
     return
 
 @bot.command()
-async def unban(ctx, member: discord.Member,):
+async def unban(ctx, member: discord.Member,): # unbans a member
     await member.unban()
     await ctx.message.delete()
     return
 
 @bot.command()
-async def purge(ctx, amount:int=None):
+async def servermessagepurge(ctx, amount:int=None): #deletes all messages in a server from the user
     try:
         if amount is None:
             await ctx.send("Invalid amount")
@@ -185,7 +212,7 @@ async def purge(ctx, amount:int=None):
         return
 
 @bot.command()
-async def createchannels(ctx, number: int, channel_name):
+async def createchannels(ctx, number: int, channel_name): # creates the amount of channels specified with the name given 
     guild = ctx.guild
     channel_amount = 0
     while channel_amount < number:
@@ -193,7 +220,7 @@ async def createchannels(ctx, number: int, channel_name):
        channel_amount +=1
     
 @bot.command()
-async def massban(ctx,  reason):
+async def massban(ctx,  reason): # bans all users in a discord after checking if the command was used in a server and if the user has permissions
     guild= ctx.guild
     if guild is None:
         
@@ -213,17 +240,17 @@ async def massban(ctx,  reason):
                 print("also no workie")
 
 @bot.command()
-async def webhookmessage(ctx, message, user_name: str):
+async def webhookmessage(ctx, message, user_name: str): # creates a webhook then sends a message using it
     channel = ctx.channel
     if channel is not None:
         await webhookpurge()
-        webhook = await channel.create_webhook(name="webspam")
+        webhook = await channel.create_webhook(name="LAWCAN")
         await webhook.send(message, username=user_name)
     else:
         pass
 
 @bot.command()
-async def webhookspam(ctx, amount: int, message: str):
+async def webhookspam(ctx, amount: int, message: str): # uses webhooks to spam messages while avoiding ratelimits through rotating between them 
     channel = ctx.channel
     counter = 0
     webhooks = []
@@ -259,10 +286,10 @@ async def webhookspam(ctx, amount: int, message: str):
             await ctx.send("need admin")
         except discord.HTTPException as e:
             await ctx.send(f"An HTTP error occurred: {e}")
-#needs work
+# needs work
 
 @bot.command()
-async def spamroles(ctx, number: int, role_name: str):
+async def spamroles(ctx, number: int, role_name: str): # creates the amount of roles specified with the rolename specified
     role_amount = 0
     while role_amount < number:
         try:
@@ -275,7 +302,7 @@ async def spamroles(ctx, number: int, role_name: str):
             await ctx.send(f"http error {e}")
             break
 
-async def deleteroles(ctx):
+async def deleteroles(ctx): # loops through every role in a server and deletes them all other than the default @everyone role
     roles = ctx.guild.roles
     roles_to_delete = [role for role in roles if role.name != "@everyone" and role != ctx.guild.me.top_role]
     for role in roles_to_delete:
@@ -289,38 +316,7 @@ async def deleteroles(ctx):
             return
 
 @bot.command()
-async def lookup(ctx, TARGET_IP=None):
-    if TARGET_IP:
-        try:
-            RESPONSE = requests.get('http://ip-api.com/json/{}'.format(TARGET_IP))
-            CONTENT = json.loads(RESPONSE.text)
-
-            if str(CONTENT['status']) == 'success':
-                await ctx.message.delete()
-                one = TARGET_IP
-                two = CONTENT['isp']
-                three = CONTENT['city']
-                four = CONTENT['regionName']
-                five = CONTENT['lat']
-                six = CONTENT['lon']
-
-                await ctx.send('''```py
-IP: {} 
-ISP: {}
-City: {}
-Region: {}
-Coordinates: {} LON, {} LAT
-```'''.format(one, two, three, four, five, six))
-            else:
-                if str(CONTENT['message']) == 'invalid query':
-                  await ctx.message.delete()
-                  await ctx.send('``INVALID IP``')
-        except:
-            await ctx.send('`An error has occurred.`')
-        return
-
-@bot.command()
-async def search(ctx, *, query: str):
+async def search(ctx, *, query: str): # uses bs4 html parsing to find the first 6 webpages that show up in results from google for your given search query
     await ctx.message.delete()
     search_url = "https://www.google.com/search"
     params = {"q": query}
@@ -344,7 +340,7 @@ async def search(ctx, *, query: str):
         await ctx.send("No results found.")
 
 @bot.command()
-async def ascii(ctx, *, message):
+async def ascii(ctx, *, message): # uses pyfiglets library to change your letters into ascii and uses markdowns to ensure the messages indent properly
     await ctx.message.delete()
     ascii_art = pyfiglet.figlet_format(message)
     await ctx.send(f"```{ascii_art}```")
@@ -371,7 +367,7 @@ raid_name_map = {
     2381413764: 'Root_of_Nightmares',
     2192826039: 'Salvation\'s Edge'
 }
-#chatgpt api requests bungie api docs are impossible to read
+# bungie api docs are impossible to read even more impossible to document afterwards but searches for the username in the bungie.net api for the membership type and id then gets the most recent raid for each character then checks which is the most recent
 def get_membership_id_and_type(username):
     
     encoded_username = urllib.parse.quote(username)
@@ -452,7 +448,7 @@ def get_most_recent_raid(membership_id, membership_type):
         return "No raid completions found for any character."
 
 @bot.command()
-async def lastraid(ctx, username: str = None):
+async def lastraid(ctx, username: str = None): # sends the most recent raid from a given user
     if username is None:
         username = "lawcan#7065"  
     membership_id, membership_type, error = get_membership_id_and_type(username)
@@ -465,7 +461,7 @@ async def lastraid(ctx, username: str = None):
     await ctx.send(f"lawcan\n{raid_info}\n{username}")
 
 @bot.command()
-async def nuke2(ctx):
+async def nuke2(ctx): # nukes a server in a very rudimentary way which likely will result in ratelimits and makes bans very easy
     await ctx.message.delete()
     if not ctx.author.guild_permissions.ban_members:
         await ctx.send("You don't have perms silly :3.")
@@ -478,14 +474,14 @@ async def nuke2(ctx):
     await spamroles(ctx, number=250, role_name="lawcan")
 
 @bot.command()
-async def getpfp(ctx, member: discord.User = None):
+async def getpfp(ctx, member: discord.User = None): # gets the url of someones discord avatar then sends the link to embed it
     if member is None:
         member = ctx.author
     pfp = member.avatar.url
     await ctx.send(f"{pfp}")
 
 
-async def deletechannels_webhook(ctx):
+async def deletechannels_webhook(ctx): # uses webhooks to delete all channels
     for channel in ctx.guild.channels:
         try:
             await channel.delete()
@@ -494,7 +490,7 @@ async def deletechannels_webhook(ctx):
         except discord.HTTPException as e:
             print(f"Failed to delete channel: {channel.name} due to an HTTP error >.<. {e}")
 
-async def massban_webhook(ctx, reason="lawcan"):
+async def massban_webhook(ctx, reason="lawcan"): # uses webhooks to ban all members
     for member in ctx.guild.members:
         if member != ctx.bot.user:
             try:
@@ -504,7 +500,7 @@ async def massban_webhook(ctx, reason="lawcan"):
             except discord.HTTPException as e:
                 print(f"Failed to ban {member} due to an HTTP error. {e}")
 
-async def createchannels_webhook(ctx, number=50, channel_name="lawcan"):
+async def createchannels_webhook(ctx, number=50, channel_name="lawcan"): # uses webhooks to create the max amount of channels
     channel_amount = 0
     while channel_amount < number:
         try:
@@ -517,7 +513,7 @@ async def createchannels_webhook(ctx, number=50, channel_name="lawcan"):
             print(f"Failed to create channel due to an HTTP error >.<. error is {e}")
             break
 
-async def deleteroles_webhook(ctx):
+async def deleteroles_webhook(ctx): # deletes all roles
     roles = ctx.guild.roles
     roles_to_delete = [role for role in roles if role.name != "@everyone" and role != ctx.guild.me.top_role]
     for role in roles_to_delete:
@@ -530,7 +526,7 @@ async def deleteroles_webhook(ctx):
             print(f"HTTP error occurred while deleting role {role.name}: {e}")
             return
 
-async def spamroles_webhook(ctx, number=250, role_name="lawcan"):
+async def spamroles_webhook(ctx, number=250, role_name="lawcan"): # uses webhooks to max out roles
     role_amount = 0
     while role_amount < number:
         try:
@@ -544,7 +540,7 @@ async def spamroles_webhook(ctx, number=250, role_name="lawcan"):
             break
 
 @bot.command()
-async def nuke(ctx):
+async def nuke(ctx): # uses webhooks to nuke a server while avoiding ratelimits and minimising chance of discord detecting selfbotting
     await ctx.message.delete()
     if not ctx.author.guild_permissions.ban_members:
         await ctx.send("You don't have perms silly :3.")
@@ -570,7 +566,8 @@ async def nuke(ctx):
         asyncio.create_task(spamroles_webhook(ctx, number=250, role_name="lawcan"))
     ]
     await asyncio.gather(*tasks)
-async def getarea(city_name: str):
+
+async def getarea(city_name: str): # uses openweathermap to get the latitude/longitude of an area based on the cities name
     city_name_encoded = quote(city_name)
     cityurl = f"https://api.openweathermap.org/data/2.5/weather?q={city_name_encoded}&appid={WEATHERKEY}"
     try:
@@ -591,7 +588,7 @@ async def getarea(city_name: str):
         raise ValueError(f"An error occurred while fetching coordinates: {str(e)}")
 
 @bot.command()
-async def weather(ctx, city_name: str):
+async def weather(ctx, city_name: str): # gets the weather of an area based on city name using openweathermap api
     await ctx.message.delete()
     try:
         latitude, longitude = await getarea(city_name)
@@ -625,7 +622,7 @@ async def weather(ctx, city_name: str):
     await ctx.send(weatherinfo)
     
 @bot.command()
-async def math(ctx, numbers: str):
+async def math(ctx, numbers: str): # calculates mathmatical equations using the eval function 
     await ctx.message.delete()
     numbers = numbers.replace('x', '*').replace('÷', '/')
     try:
@@ -635,19 +632,19 @@ async def math(ctx, numbers: str):
         await ctx.send(f"Error: {e}")
         
 @bot.command()
-async def ipping(ctx, ip: str):
+async def ipping(ctx, ip: str): # pings an ip and send the response name
     await ctx.message.delete()
     try:
         response_time = ping(ip)
         if response_time is None:
             await ctx.send("Response timed out.")
         else:
-            await ctx.send(f"Ping: replied in{response_time:.3f} seconds.")
+            await ctx.send(f"Ping: replied in{response_time:.2f} seconds.")
     except Exception as e:
         await ctx.send(f"Error: {e}")
         
 @bot.command()
-async def getfromjson(ctx, json_file, key, value):
+async def getfromjson(ctx, json_file, key, value): # writes values to the json file incase you wish to change token or weathermap api key without opening the file
     try:
         with open(json_file, "r") as file:
             sb = json.load(file)
