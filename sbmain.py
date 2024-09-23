@@ -12,6 +12,9 @@ import urllib.parse
 from urllib.parse import quote
 import aiohttp
 from ping3 import ping
+import wmi
+import GPUtil
+import psutil
 #imports as this is a library extensive project
 
 folder_sb = os.path.dirname(os.path.realpath(__file__)) # checks for config.json within the file path if it is missing creates then reads from the file
@@ -653,5 +656,49 @@ async def getfromjson(ctx, json_file, key, value): # writes values to the json f
     sb[key] = value.strip()
     with open(json_file, "w") as file:
         json.dump(sb, file, indent=4)
+        
+def get_pc_parts():
+    #get cpuname
+    cpuname = ""
+    for cpu in computer.Win32_Processor(): 
+        cpuname = f"**CPU**: {cpu.Name}\n"
+
+    #get gpu name
+    gpuname = ""
+    gpus = GPUtil.getGPUs()
+    if gpus:
+        for gpu in gpus:
+            gpuname += f"**GPU**: {gpu.name}\n"
+    else:
+        gpuname = "**GPU**: No dedicated GPU found\n"
+
+    #getraminfo
+    raminfo = ""
+    for ram in computer.Win32_PhysicalMemory():
+        raminfo += f"**RAM**: {ram.Manufacturer} {int(ram.Capacity) / (1024 ** 3):.2f} GB\n"
+
+    #get diskinfo
+    diskinfo = ""
+    for disk in computer.Win32_DiskDrive():
+        diskinfo += f"**Disk Drive**: {disk.Model} ({int(disk.Size) / (1024 ** 3):.2f} GB)\n"
+
+    #get the total amount of ram
+    total_ram = psutil.virtual_memory().total / (1024 ** 3)
+
+    #list of everything
+    pcparts = (
+        f"{cpuname}"
+        f"{gpuname}"
+        f"{raminfo}"
+        f"**Total RAM**: {total_ram:.2f} GB\n"
+        f"{diskinfo}"
+    )
+    return pcparts
+
+@bot.command()
+async def pcinfo(ctx):
+    await ctx.message.delete()
+    parts = get_pc_parts()
+    await ctx.send(f"{parts}")
 
 bot.run(TOKEN)
