@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta 
 import discord
 from discord.ext import commands
 import json
@@ -16,6 +16,8 @@ import wmi
 import GPUtil
 import psutil
 #imports as this is a library extensive project
+
+computer = wmi.WMI() 
 
 folder_sb = os.path.dirname(os.path.realpath(__file__)) # checks for config.json within the file path if it is missing creates then reads from the file
 json_file = os.path.join(folder_sb, 'config.json')
@@ -47,6 +49,7 @@ bot = commands.Bot(command_prefix='`', self_bot=True,) # sets the bot variable a
 
 @bot.command()
 async def webhookpurge(ctx): # checks if the message was sent in a channel then deletes any existing webhooks 
+    """deletes all pre existing webhooks"""
     channel = ctx.channel  
     
     if channel is not None:
@@ -64,11 +67,14 @@ async def webhookpurge(ctx): # checks if the message was sent in a channel then 
 
 @bot.command()
 async def spam(ctx, Number=None, *, message): # sends a message the amount of times specified
+  """spams a string the amount of times specified"""
+
   await ctx.message.delete()
   count = 0
   while count < int(Number):
       await ctx.send("{}".format(message))
       count = count + 1
+      
 
 @bot.command()
 async def meow(ctx): # sends an ascii image of a cat
@@ -106,6 +112,7 @@ async def meow(ctx): # sends an ascii image of a cat
 
 @bot.command()
 async def deletechannels(ctx): # deletes all channels in the guild the message was sent requires admin (needs exceptions adding)
+    """deletes all channels"""
     guild = ctx.guild
     for channel in guild.channels:
         await channel.delete()
@@ -140,6 +147,7 @@ getpfp - retrieves the profile picture of a specified user or the command author
 
 @bot.command()
 async def iplookup(ctx, TARGET_IP=None): # looks up an ip address using the ip-api api
+    """looks up an ip address"""
     if TARGET_IP:
         try:
             RESPONSE = requests.get('http://ip-api.com/json/{}'.format(TARGET_IP))
@@ -171,30 +179,33 @@ Coordinates: {} LON, {} LAT
 
 @bot.command()
 async def ban(ctx, member: discord.Member, *, reason=None): # bans the user pinged with no reason
+    """bans a user"""
     await member.ban(reason=reason)
     await ctx.message.delete()
     return
 
 @bot.command()
 async def kick(ctx, member: discord.Member): # kicks a member
+    """kicks a user"""
     await member.kick()
     await ctx.message.delete()
     return
 
 @bot.command()
 async def unban(ctx, member: discord.Member,): # unbans a member
+    """unbans a user"""
     await member.unban()
     await ctx.message.delete()
     return
 
 @bot.command()
-async def servermessagepurge(ctx, amount:int=None): #deletes all messages in a server from the user
+async def purge(ctx, amount:int=None): #deletes all messages in a server from the user
+    """deletes the amount of messages specified"""
     try:
         if amount is None:
             await ctx.send("Invalid amount")
         else:
-            deleted = await ctx.channel.purge(limit=amount, before=ctx.message, check=message.author == bot.user) //message.author == bot.user
-            asd = await ctx.send('Deleted {} message(s)'.format(len(deleted)))
+            deleted = await ctx.channel.purge(limit=amount, before=ctx.message, check=message.author == bot.user) 
             await asyncio.sleep(3)
             await asd.delete()
     except:
@@ -216,6 +227,7 @@ async def servermessagepurge(ctx, amount:int=None): #deletes all messages in a s
 
 @bot.command()
 async def createchannels(ctx, number: int, channel_name): # creates the amount of channels specified with the name given 
+    """creates the amount of channels specified with the name specified"""
     guild = ctx.guild
     channel_amount = 0
     while channel_amount < number:
@@ -224,6 +236,7 @@ async def createchannels(ctx, number: int, channel_name): # creates the amount o
     
 @bot.command()
 async def massban(ctx,  reason): # bans all users in a discord after checking if the command was used in a server and if the user has permissions
+    """bans all users in a guild"""
     guild= ctx.guild
     if guild is None:
         
@@ -244,6 +257,7 @@ async def massban(ctx,  reason): # bans all users in a discord after checking if
 
 @bot.command()
 async def webhookmessage(ctx, message, user_name: str): # creates a webhook then sends a message using it
+    """sends a message using a webhook"""
     channel = ctx.channel
     if channel is not None:
         await webhookpurge()
@@ -254,6 +268,7 @@ async def webhookmessage(ctx, message, user_name: str): # creates a webhook then
 
 @bot.command()
 async def webhookspam(ctx, amount: int, message: str): # uses webhooks to spam messages while avoiding ratelimits through rotating between them 
+    """uses webhooks to spam a message avoiding rate limits"""
     channel = ctx.channel
     counter = 0
     webhooks = []
@@ -293,6 +308,7 @@ async def webhookspam(ctx, amount: int, message: str): # uses webhooks to spam m
 
 @bot.command()
 async def spamroles(ctx, number: int, role_name: str): # creates the amount of roles specified with the rolename specified
+    """creates an amount of roles specified"""
     role_amount = 0
     while role_amount < number:
         try:
@@ -306,6 +322,7 @@ async def spamroles(ctx, number: int, role_name: str): # creates the amount of r
             break
 
 async def deleteroles(ctx): # loops through every role in a server and deletes them all other than the default @everyone role
+    """deletes all roles"""
     roles = ctx.guild.roles
     roles_to_delete = [role for role in roles if role.name != "@everyone" and role != ctx.guild.me.top_role]
     for role in roles_to_delete:
@@ -320,6 +337,7 @@ async def deleteroles(ctx): # loops through every role in a server and deletes t
 
 @bot.command()
 async def search(ctx, *, query: str): # uses bs4 html parsing to find the first 6 webpages that show up in results from google for your given search query
+    """searches for the 1st six search results using google"""
     await ctx.message.delete()
     search_url = "https://www.google.com/search"
     params = {"q": query}
@@ -344,6 +362,7 @@ async def search(ctx, *, query: str): # uses bs4 html parsing to find the first 
 
 @bot.command()
 async def ascii(ctx, *, message): # uses pyfiglets library to change your letters into ascii and uses markdowns to ensure the messages indent properly
+    """converts text to ascii"""
     await ctx.message.delete()
     ascii_art = pyfiglet.figlet_format(message)
     await ctx.send(f"```{ascii_art}```")
@@ -372,6 +391,7 @@ raid_name_map = {
 }
 # bungie api docs are impossible to read even more impossible to document afterwards but searches for the username in the bungie.net api for the membership type and id then gets the most recent raid for each character then checks which is the most recent
 def get_membership_id_and_type(username):
+    """searches a bungie username for the type and id"""
     
     encoded_username = urllib.parse.quote(username)
     search_endpoint = f'{BASE_URL}SearchDestinyPlayer/-1/{encoded_username}/'
@@ -390,7 +410,8 @@ def get_membership_id_and_type(username):
     else:
         return None, None, "Username not found or invalid."
 
-def get_most_recent_raid(membership_id, membership_type):
+def get_most_recent_raid(membership_id, membership_type): # checks the last raid completion for each character then returns the most recent raid
+    """gets the last completed raid for an account"""
     characters_endpoint = f'{BASE_URL}{membership_type}/Profile/{membership_id}/?components=200'
     try:
         response = requests.get(characters_endpoint, headers=headers)
@@ -452,6 +473,7 @@ def get_most_recent_raid(membership_id, membership_type):
 
 @bot.command()
 async def lastraid(ctx, username: str = None): # sends the most recent raid from a given user
+    """sends the last raid completed by a user"""
     if username is None:
         username = "lawcan#7065"  
     membership_id, membership_type, error = get_membership_id_and_type(username)
@@ -465,6 +487,7 @@ async def lastraid(ctx, username: str = None): # sends the most recent raid from
 
 @bot.command()
 async def nuke2(ctx): # nukes a server in a very rudimentary way which likely will result in ratelimits and makes bans very easy
+    """nukes discord server without the use of webhoooks"""
     await ctx.message.delete()
     if not ctx.author.guild_permissions.ban_members:
         await ctx.send("You don't have perms silly :3.")
@@ -477,14 +500,15 @@ async def nuke2(ctx): # nukes a server in a very rudimentary way which likely wi
     await spamroles(ctx, number=250, role_name="lawcan")
 
 @bot.command()
-async def getpfp(ctx, member: discord.User = None): # gets the url of someones discord avatar then sends the link to embed it
+async def getpfp(ctx, member: discord.User = None):
+    """gets the avatar of a member"""
     if member is None:
         member = ctx.author
     pfp = member.avatar.url
     await ctx.send(f"{pfp}")
 
-
 async def deletechannels_webhook(ctx): # uses webhooks to delete all channels
+    """uses webhooks to delete every channel"""
     for channel in ctx.guild.channels:
         try:
             await channel.delete()
@@ -493,7 +517,8 @@ async def deletechannels_webhook(ctx): # uses webhooks to delete all channels
         except discord.HTTPException as e:
             print(f"Failed to delete channel: {channel.name} due to an HTTP error >.<. {e}")
 
-async def massban_webhook(ctx, reason="lawcan"): # uses webhooks to ban all members
+async def massban_webhook(ctx, reason="lawcan"): 
+    """uses webhooks to ban all users"""
     for member in ctx.guild.members:
         if member != ctx.bot.user:
             try:
@@ -503,7 +528,10 @@ async def massban_webhook(ctx, reason="lawcan"): # uses webhooks to ban all memb
             except discord.HTTPException as e:
                 print(f"Failed to ban {member} due to an HTTP error. {e}")
 
-async def createchannels_webhook(ctx, number=50, channel_name="lawcan"): # uses webhooks to create the max amount of channels
+async def createchannels_webhook(ctx, number=50, channel_name="lawcan"): 
+    """
+    uses webhooks to max out channels
+    """
     channel_amount = 0
     while channel_amount < number:
         try:
@@ -517,6 +545,9 @@ async def createchannels_webhook(ctx, number=50, channel_name="lawcan"): # uses 
             break
 
 async def deleteroles_webhook(ctx): # deletes all roles
+    """
+    uses webhooks to delete all roles
+    """
     roles = ctx.guild.roles
     roles_to_delete = [role for role in roles if role.name != "@everyone" and role != ctx.guild.me.top_role]
     for role in roles_to_delete:
@@ -529,7 +560,10 @@ async def deleteroles_webhook(ctx): # deletes all roles
             print(f"HTTP error occurred while deleting role {role.name}: {e}")
             return
 
-async def spamroles_webhook(ctx, number=250, role_name="lawcan"): # uses webhooks to max out roles
+async def spamroles_webhook(ctx, number=250, role_name="lawcan"):
+    """
+    uses webhooks to max out roles
+    """
     role_amount = 0
     while role_amount < number:
         try:
@@ -571,6 +605,7 @@ async def nuke(ctx): # uses webhooks to nuke a server while avoiding ratelimits 
     await asyncio.gather(*tasks)
 
 async def getarea(city_name: str): # uses openweathermap to get the latitude/longitude of an area based on the cities name
+    """gets the lat/lon of an area based on the city name"""
     city_name_encoded = quote(city_name)
     cityurl = f"https://api.openweathermap.org/data/2.5/weather?q={city_name_encoded}&appid={WEATHERKEY}"
     try:
@@ -592,6 +627,7 @@ async def getarea(city_name: str): # uses openweathermap to get the latitude/lon
 
 @bot.command()
 async def weather(ctx, city_name: str): # gets the weather of an area based on city name using openweathermap api
+    """gets the weather of a location"""
     await ctx.message.delete()
     try:
         latitude, longitude = await getarea(city_name)
@@ -626,6 +662,7 @@ async def weather(ctx, city_name: str): # gets the weather of an area based on c
     
 @bot.command()
 async def math(ctx, numbers: str): # calculates mathmatical equations using the eval function 
+    """uses eval to complete math queries for you"""
     await ctx.message.delete()
     numbers = numbers.replace('x', '*').replace('÷', '/')
     try:
@@ -635,7 +672,8 @@ async def math(ctx, numbers: str): # calculates mathmatical equations using the 
         await ctx.send(f"Error: {e}")
         
 @bot.command()
-async def ipping(ctx, ip: str): # pings an ip and send the response time
+async def ipping(ctx, ip: str): # pings an ip and send the response name
+    """pings an ip address"""
     await ctx.message.delete()
     try:
         response_time = ping(ip)
@@ -647,7 +685,8 @@ async def ipping(ctx, ip: str): # pings an ip and send the response time
         await ctx.send(f"Error: {e}")
         
 @bot.command()
-async def getfromjson(ctx, json_file, key, value): # writes values to the json file incase you wish to change token or weathermap api key without opening the config file
+async def editconfig(ctx, json_file, key, value): # writes values to the json file incase you wish to change token or weathermap api key without opening the file
+    """finds and changes configs"""
     try:
         with open(json_file, "r") as file:
             sb = json.load(file)
@@ -656,8 +695,11 @@ async def getfromjson(ctx, json_file, key, value): # writes values to the json f
     sb[key] = value.strip()
     with open(json_file, "w") as file:
         json.dump(sb, file, indent=4)
-        
+
 def get_pc_parts():
+    """
+    returns each pc component
+    """
     #get cpuname
     cpuname = ""
     for cpu in computer.Win32_Processor(): 
@@ -702,8 +744,9 @@ def get_pc_parts():
 
 @bot.command()
 async def pcinfo(ctx):
+    """sends a message containing each pc component"""
     await ctx.message.delete()
     parts = get_pc_parts()
     await ctx.send(f"{parts}")
-
+    
 bot.run(TOKEN)
