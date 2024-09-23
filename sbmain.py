@@ -684,6 +684,10 @@ def get_pc_parts():
 
     #get the total amount of ram
     total_ram = psutil.virtual_memory().total / (1024 ** 3)
+    ostype = os.name
+    if ostype == "nt":
+        ostype = "windows"
+    osname = f"**Operating system**: {ostype}"
 
     #list of everything
     pcparts = (
@@ -692,6 +696,7 @@ def get_pc_parts():
         f"{raminfo}"
         f"**Total RAM**: {total_ram:.2f} GB\n"
         f"{diskinfo}"
+        f"{osname}"
     )
     return pcparts
 
