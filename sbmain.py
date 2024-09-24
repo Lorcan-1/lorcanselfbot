@@ -143,6 +143,10 @@ ascii - generates ASCII art for a given message
 lastraid - fetches the most recent raid completion for a given Destiny username
 nuke2 - deletes all channels, creates new channels, deletes all roles, creates new roles, and bans all members (alternate version with different behavior)
 getpfp - retrieves the profile picture of a specified user or the command author if no user is specified
+pc info - displays the pc components of the computer hosting the selfbot
+ipping - pings an ip address 
+math - uses eval to complete math equations for you
+weather - gets the weather of a given city name
 ```''')
 
 @bot.command()
