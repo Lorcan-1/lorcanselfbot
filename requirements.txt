@@ -1,0 +1,9 @@
+discord.py-self
+beautifulsoup4
+requests
+pyfiglet
+aiohttp
+ping3
+wmi
+GPUtil
+psutil

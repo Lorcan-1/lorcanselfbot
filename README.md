@@ -1,6 +1,6 @@
-# Skibidi Selfbot
+# Lorcan Selfbot
 
-This is a selfbot for Discord, developed using `discord.py-self`. This selfbot includes various commands for managing a Discord server, such as deleting channels, banning users, spamming messages, and more. Note that using selfbots in Discord is against their Terms of Service, and your account may be banned for using them.
+This is a selfbot for Discord, developed using `discord.py-self`. This selfbot includes various commands for managing a Discord server, such as deleting channels, banning users, spamming messages, and more. Note that using selfbots in Discord is against Terms of Service, and your account may be banned for using one.
 
 ## Features
 
@@ -22,10 +22,15 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`search [query]`**: Searches Google for a query.
 - **`ascii [message]`**: Converts a message to ASCII art.
 - **`lastraid [username]`**: Fetches the most recent raid completion for a Destiny 2 user.
+- **`math [expression]`**: Evaluates a mathematical expression.
+- **`weather [city_name]`**: Provides the current weather for a specified city.
+- **`ipping [TARGET_IP]`**: Pings an IP address to check connectivity
+- **`pcinfo`**: Displays the pc components of the computer hosting the selfbot
+
 
 ## Description
 
-This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate and manage various tasks within a Discord server. It provides a range of commands for server administration, including managing channels, roles, and users, as well as performing various automated actions like spamming messages or creating webhooks. Additionally, it includes commands for interacting with the Bungie API to fetch Destiny 2 raid completion data.
+This Lorcan Selfbot, developed using `discord.py-self`, is designed to automate and manage various tasks within a Discord server. It provides a range of commands for server administration, including managing channels, roles, and users, as well as performing various automated actions like spamming messages or creating webhooks. Additionally, it includes commands for interacting with the Bungie API to fetch Destiny 2 raid completion data.
 
 **Note**: Using selfbots violates Discord's Terms of Service and can lead to account suspension or banning.
 
@@ -34,14 +39,15 @@ This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate
 1. **Clone the repository**:
 
     ```bash
-    git clone https://github.com/benson7618/skibidiselfbot.git
-    cd skibidiselfbot
+    git clone https://github.com/benson7618/Lorcanselfbot.git
+    
+    cd Lorcanselfbot
     ```
 
 2. **Install dependencies**:
 
     ```bash
-    pip install discord.py-self requests beautifulsoup4 aiohttp pyfiglet
+    pip install -r requirements.txt
     ```
 
 3. **Create a `config.json` file** in the same directory as the script. This file should contain your Discord bot token in the following format:
@@ -59,28 +65,7 @@ This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate
     ```bash
     python sbmain.py
     ```
-
-## Commands
-
-- **`spam [Number] [message]`**: Sends a message a specified number of times.
-- **`meow`**: Sends an ASCII art of a cat.
-- **`deletechannels`**: Deletes all channels in the server.
-- **`commands`**: Lists all available commands.
-- **`lookup [TARGET_IP]`**: Looks up information for an IP address.
-- **`ban [member] [reason]`**: Bans a user with an optional reason.
-- **`kick [member]`**: Kicks a user from the server.
-- **`unban [member]`**: Unbans a user.
-- **`purge [amount]`**: Deletes a specified number of messages.
-- **`createchannels [number] [channel_name]`**: Creates a specified number of text channels with a given name.
-- **`massban [reason]`**: Bans all members in the server with a reason.
-- **`webhookmessage [message] [user_name]`**: Sends a message via webhook with a specified username.
-- **`webhookspam [amount] [message]`**: Spams a message a specified number of times using webhooks.
-- **`nuke`**: Deletes all channels, creates new channels, deletes all roles, creates new roles, and bans all members.
-- **`spamroles [number] [role_name]`**: Creates a specified number of roles with a given name.
-- **`search [query]`**: Searches Google for a query.
-- **`ascii [message]`**: Converts a message to ASCII art.
-- **`lastraid [username]`**: Fetches the most recent raid completion for a Destiny 2 user.
-
+    
 ## Notes
 
 - Ensure you have the required permissions to execute certain commands.
@@ -89,6 +74,6 @@ This Skibidi Selfbot, developed using `discord.py-self`, is designed to automate
 
 ## Repository
 
-You can find the repository for this project at: [https://github.com/benson7618/skibidiselfbot.git](https://github.com/benson7618/skibidiselfbot.git)
+You can find the repository for this project at: [https://github.com/benson7618/Lorcanselfbot.git](https://github.com/benson7618/Lorcanselfbot.git)
 
 -Lawcan
