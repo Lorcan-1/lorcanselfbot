@@ -24,7 +24,8 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`lastraid [username]`**: Fetches the most recent raid completion for a Destiny 2 user.
 - **`math [expression]`**: Evaluates a mathematical expression.
 - **`weather [city_name]`**: Provides the current weather for a specified city.
-- **`ipping [TARGET_IP]`**: Pings an IP address to check connectivity.
+- **`ipping [TARGET_IP]`**: Pings an IP address to check connectivity
+- **`pcinfo`**: Displays the pc components of the computer hosting the selfbot
 
 
 ## Description
