@@ -15,6 +15,8 @@ from ping3 import ping
 import wmi
 import GPUtil
 import psutil
+import random
+import string
 #imports as this is a library extensive project
 
 computer = wmi.WMI() 
@@ -752,5 +754,11 @@ async def pcinfo(ctx):
     await ctx.message.delete()
     parts = get_pc_parts()
     await ctx.send(f"{parts}")
+    
+@bot.command()
+async def generatenitro(ctx):
+    """sends a formatted random nitro.gift link with the possibility to send nitro"""#unlikely to ever work just wanted to add cos cool feature very very useless
+    nitrocode = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+    await ctx.send(f"discord.gift/{nitrocode}")
     
 bot.run(TOKEN)
