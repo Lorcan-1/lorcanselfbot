@@ -26,6 +26,10 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`weather [city_name]`**: Provides the current weather for a specified city.
 - **`ipping [TARGET_IP]`**: Pings an IP address to check connectivity
 - **`pcinfo`**: Displays the pc components of the computer hosting the selfbot
+- **`time`**: Sends the current time formatted  
+- **`generatenitro`**: Sends a random discord.gift link highly unlikely to ever be an actual link
+
+
 
 
 ## Description
