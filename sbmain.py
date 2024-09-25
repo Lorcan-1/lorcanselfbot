@@ -148,6 +148,8 @@ pc info - displays the pc components of the computer hosting the selfbot
 ipping - pings an ip address 
 math - uses eval to complete math equations for you
 weather - gets the weather of a given city name
+time - sends the current time formatted as Y-%m-%d %H:%M:%S
+generatenitro - sends a random nitro.gift link
 ```''')
 
 @bot.command()
