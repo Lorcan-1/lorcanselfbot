@@ -18,7 +18,6 @@ import psutil
 import random
 import string
 #imports as this is a library extensive project
-
 computer = wmi.WMI() 
 
 folder_sb = os.path.dirname(os.path.realpath(__file__)) # checks for config.json within the file path if it is missing creates then reads from the file
@@ -29,7 +28,6 @@ if os.path.exists(json_file):
         sb = json.load(file)
 else:
     sb = {}
-
 
 TOKEN = sb.get("TOKEN", "").strip() # checks for TOKEN within config.json if there is no TOKEN prompts the user to enter it then writes to the file
 if not TOKEN:
@@ -77,7 +75,6 @@ async def spam(ctx, Number=None, *, message): # sends a message the amount of ti
       await ctx.send("{}".format(message))
       count = count + 1
       
-
 @bot.command()
 async def meow(ctx): # sends an ascii image of a cat
     await ctx.message.delete()
