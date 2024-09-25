@@ -18,6 +18,7 @@ import psutil
 import random
 import string
 #imports as this is a library extensive project
+
 computer = wmi.WMI() 
 
 folder_sb = os.path.dirname(os.path.realpath(__file__)) # checks for config.json within the file path if it is missing creates then reads from the file
@@ -112,6 +113,7 @@ async def meow(ctx): # sends an ascii image of a cat
 @bot.command()
 async def deletechannels(ctx): # deletes all channels in the guild the message was sent requires admin (needs exceptions adding)
     """deletes all channels"""
+    await ctx.message.delete()
     guild = ctx.guild
     for channel in guild.channels:
         await channel.delete()
@@ -151,6 +153,7 @@ weather - gets the weather of a given city name
 @bot.command()
 async def iplookup(ctx, TARGET_IP=None): # looks up an ip address using the ip-api api
     """looks up an ip address"""
+    await ctx.message.delete()
     if TARGET_IP:
         try:
             RESPONSE = requests.get('http://ip-api.com/json/{}'.format(TARGET_IP))
@@ -204,6 +207,7 @@ async def unban(ctx, member: discord.Member,): # unbans a member
 @bot.command()
 async def purge(ctx, amount:int=None): #deletes all messages in a server from the user
     """deletes the amount of messages specified"""
+    await ctx.message.delete()
     try:
         if amount is None:
             await ctx.send("Invalid amount")
@@ -231,6 +235,7 @@ async def purge(ctx, amount:int=None): #deletes all messages in a server from th
 @bot.command()
 async def createchannels(ctx, number: int, channel_name): # creates the amount of channels specified with the name given 
     """creates the amount of channels specified with the name specified"""
+    await ctx.message.delete()
     guild = ctx.guild
     channel_amount = 0
     while channel_amount < number:
@@ -240,6 +245,7 @@ async def createchannels(ctx, number: int, channel_name): # creates the amount o
 @bot.command()
 async def massban(ctx,  reason): # bans all users in a discord after checking if the command was used in a server and if the user has permissions
     """bans all users in a guild"""
+    await ctx.message.delete()
     guild= ctx.guild
     if guild is None:
         
@@ -261,6 +267,7 @@ async def massban(ctx,  reason): # bans all users in a discord after checking if
 @bot.command()
 async def webhookmessage(ctx, message, user_name: str): # creates a webhook then sends a message using it
     """sends a message using a webhook"""
+    await ctx.message.delete()
     channel = ctx.channel
     if channel is not None:
         await webhookpurge()
@@ -272,6 +279,7 @@ async def webhookmessage(ctx, message, user_name: str): # creates a webhook then
 @bot.command()
 async def webhookspam(ctx, amount: int, message: str): # uses webhooks to spam messages while avoiding ratelimits through rotating between them 
     """uses webhooks to spam a message avoiding rate limits"""
+    await ctx.message.delete()
     channel = ctx.channel
     counter = 0
     webhooks = []
@@ -312,6 +320,7 @@ async def webhookspam(ctx, amount: int, message: str): # uses webhooks to spam m
 @bot.command()
 async def spamroles(ctx, number: int, role_name: str): # creates the amount of roles specified with the rolename specified
     """creates an amount of roles specified"""
+    await ctx.message.delete()
     role_amount = 0
     while role_amount < number:
         try:
@@ -326,6 +335,7 @@ async def spamroles(ctx, number: int, role_name: str): # creates the amount of r
 
 async def deleteroles(ctx): # loops through every role in a server and deletes them all other than the default @everyone role
     """deletes all roles"""
+    await ctx.message.delete()
     roles = ctx.guild.roles
     roles_to_delete = [role for role in roles if role.name != "@everyone" and role != ctx.guild.me.top_role]
     for role in roles_to_delete:
@@ -476,6 +486,7 @@ def get_most_recent_raid(membership_id, membership_type): # checks the last raid
 
 @bot.command()
 async def lastraid(ctx, username: str = None): # sends the most recent raid from a given user
+    await ctx.message.delete()
     """sends the last raid completed by a user"""
     if username is None:
         username = "lawcan#7065"  
@@ -690,6 +701,7 @@ async def ipping(ctx, ip: str): # pings an ip and send the response name
 @bot.command()
 async def editconfig(ctx, json_file, key, value): # writes values to the json file incase you wish to change token or weathermap api key without opening the file
     """finds and changes configs"""
+    await ctx.message.delete()
     try:
         with open(json_file, "r") as file:
             sb = json.load(file)
@@ -754,8 +766,17 @@ async def pcinfo(ctx):
     
 @bot.command()
 async def generatenitro(ctx):
+    await ctx.message.delete()
     """sends a formatted random nitro.gift link with the possibility to send nitro"""#unlikely to ever work just wanted to add cos cool feature very very useless
     nitrocode = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
     await ctx.send(f"discord.gift/{nitrocode}")
+
+@bot.command()
+async def time(ctx):
+    """sends the current time in a message"""
+    await ctx.message.delete()
+    time = datetime.now()
+    formattedtime = time.strftime("%Y-%m-%d %H:%M:%S")
+    await ctx.send(f"the time is: {formattedtime}")
     
 bot.run(TOKEN)
