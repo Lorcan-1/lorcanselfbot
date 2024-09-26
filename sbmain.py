@@ -19,7 +19,8 @@ import random
 import string
 import re
 import httpx
-#imports as this is a library extensive project
+import qrcode
+import io
 
 computer = wmi.WMI() 
 
@@ -856,4 +857,25 @@ async def redeemgiftcode(channel_id, code): # redeems the code
                 print('\033[31m' + json.dumps(result.json(), indent=4) + '\033[0m')  # evil error message in red to show its evil
         except Exception as e:
             print('\033[31m' + f'An error occurred: {str(e)}' + '\033[0m')  # same thing as the other one in red
+
+@bot.command()
+async def makeqrcode(ctx, link):
+    """generates a qrcode based on a given link"""
+    await ctx.message.delete()
+    qr = qrcode.QRCode(
+        version=2,  
+        error_correction=qrcode.constants.ERROR_CORRECT_L,  
+        box_size=30,  
+        border=5,  
+    )
+    qr.add_data(link)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    
+    #saves the image in a buffer
+    with io.BytesIO() as buf:
+        img.save(buf, format='PNG')
+        buf.seek(0)  
+        await ctx.send(file=discord.File(buf, filename='qrcode.png'))
+        
 bot.run(TOKEN)
