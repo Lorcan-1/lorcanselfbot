@@ -781,4 +781,27 @@ async def time(ctx):
     formattedtime = time.strftime("%Y-%m-%d %H:%M:%S")
     await ctx.send(f"the time is: {formattedtime}")
     
+async def word(dictionaryword):
+    dictionaryurl = f"https://api.dictionaryapi.dev/api/v2/entries/en/{dictionaryword}"
+    
+    async with aiohttp.ClientSession() as session:
+        async with session.get(dictionaryurl) as response:
+            data = await response.json()
+            return data
+
+@bot.command()
+async def dictionary(ctx, dictionaryword):
+    await ctx.message.delete()
+    
+    try:
+        data = await word(dictionaryword)
+        if isinstance(data, list) and "word" in data[0]:
+            word_info = data[0]
+            definition = word_info['meanings'][0]['definitions'][0]['definition']
+            await ctx.send(f"**{word_info['word']}**: {definition}")
+        else:
+            await ctx.send(f"word not found: {dictionaryword}.")
+    except Exception as e:
+        await ctx.send(f"An oopsie happened: {str(e)}")
+    
 bot.run(TOKEN)
