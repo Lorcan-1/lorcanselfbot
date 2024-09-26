@@ -859,7 +859,7 @@ async def redeemgiftcode(channel_id, code): # redeems the code
             print('\033[31m' + f'An error occurred: {str(e)}' + '\033[0m')  # same thing as the other one in red
 
 @bot.command()
-async def makeqrcode(ctx, link):
+async def qrcodegen(ctx, link):
     """generates a qrcode based on a given link"""
     await ctx.message.delete()
     qr = qrcode.QRCode(
