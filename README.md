@@ -28,6 +28,8 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`pcinfo`**: Displays the pc components of the computer hosting the selfbot
 - **`time`**: Sends the current time formatted  
 - **`generatenitro`**: Sends a random discord.gift link highly unlikely to ever be an actual link
+- **`dictionary`**: searches a word in the dictionary
+- **`nitro sniper`**: reads messages for nitro gift links and redeems them for you
 
 
 
