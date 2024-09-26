@@ -802,7 +802,7 @@ async def dictionary(ctx, dictionaryword):
             meanings = word_info.get('meanings', [])
             definitions_list = []
             
-            for meaning in meanings:
+            for meaning in meanings: # chat gpt code cos realised i wanted 3 definitions and was too lazy to write
                 definitions = meaning.get('definitions', [])
                 for definition in definitions:
                     definitions_list.append(definition['definition'])
