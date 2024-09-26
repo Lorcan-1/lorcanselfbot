@@ -17,6 +17,8 @@ import GPUtil
 import psutil
 import random
 import string
+import re
+import httpx
 #imports as this is a library extensive project
 
 computer = wmi.WMI() 
@@ -802,7 +804,7 @@ async def dictionary(ctx, dictionaryword):
             meanings = word_info.get('meanings', [])
             definitions_list = []
             
-            for meaning in meanings: # chat gpt code cos realised i wanted 3 definitions and was too lazy to write
+            for meaning in meanings:
                 definitions = meaning.get('definitions', [])
                 for definition in definitions:
                     definitions_list.append(definition['definition'])
@@ -821,4 +823,37 @@ async def dictionary(ctx, dictionaryword):
     except Exception as e:
         await ctx.send(f"An oopsie happened: {str(e)}")
 
+coderegex = re.compile(r"(discord.com/gifts/|discordapp.com/gifts/|discord.gift/)([a-zA-Z0-9]+)")
+ready = False 
+
+@bot.event
+async def on_message(ctx):
+    """checks messages for nitro gift links"""
+    global ready
+    if not ready:
+        ready = True
+
+    # checks messages for discord gift links
+    if coderegex.search(ctx.content):
+        code = coderegex.search(ctx.content).group(2)
+        asyncio.create_task(redeemgiftcode(ctx.channel.id, code))    
+    await bot.process_commands(ctx)  # idk what this does but it fixes all my problems so its here now ig
+
+async def redeemgiftcode(channel_id, code): # redeems the code
+    """redeems a gift code"""
+    async with httpx.AsyncClient() as client:
+        try:
+            result = await client.post(
+                f'https://discord.com/api/v9/entitlements/gift-codes/{code}/redeem',
+                json={'channel_id': str(channel_id)},
+                headers={'authorization': TOKEN, 'user-agent': 'Mozilla/5.0'}
+            )
+
+            
+            if result.status_code == 200:
+                print('\033[32m' + 'Successfully redeemed gift code!' + '\033[0m')  # success message in pretty green
+            else:
+                print('\033[31m' + json.dumps(result.json(), indent=4) + '\033[0m')  # evil error message in red to show its evil
+        except Exception as e:
+            print('\033[31m' + f'An error occurred: {str(e)}' + '\033[0m')  # same thing as the other one in red
 bot.run(TOKEN)
