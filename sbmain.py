@@ -768,40 +768,57 @@ async def pcinfo(ctx):
     
 @bot.command()
 async def generatenitro(ctx):
-    await ctx.message.delete()
-    """sends a formatted random nitro.gift link with the possibility to send nitro"""#unlikely to ever work just wanted to add cos cool feature very very useless
+    """sends a formatted random nitro.gift link with the possibility to send nitro"""
+    await ctx.message.delete() #unlikely to ever work just wanted to add cos cool feature very very useless
     nitrocode = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
     await ctx.send(f"discord.gift/{nitrocode}")
 
 @bot.command()
 async def time(ctx):
-    """sends the current time in a message"""
+    """sends the current time in a message""" # gets the current time using date time
     await ctx.message.delete()
     time = datetime.now()
     formattedtime = time.strftime("%Y-%m-%d %H:%M:%S")
     await ctx.send(f"the time is: {formattedtime}")
-    
+
 async def word(dictionaryword):
-    dictionaryurl = f"https://api.dictionaryapi.dev/api/v2/entries/en/{dictionaryword}"
+    """gets the definitions of a word from dictionary api"""
+    dictionaryurl = f"https://api.dictionaryapi.dev/api/v2/entries/en/{dictionaryword}" # sets url for the dictionary api
     
     async with aiohttp.ClientSession() as session:
         async with session.get(dictionaryurl) as response:
             data = await response.json()
-            return data
+            return data # returns the information from the api
 
 @bot.command()
 async def dictionary(ctx, dictionaryword):
+    """looks up a word in the dictionary api"""
     await ctx.message.delete()
     
     try:
         data = await word(dictionaryword)
         if isinstance(data, list) and "word" in data[0]:
             word_info = data[0]
-            definition = word_info['meanings'][0]['definitions'][0]['definition']
-            await ctx.send(f"**{word_info['word']}**: {definition}")
+            meanings = word_info.get('meanings', [])
+            definitions_list = []
+            
+            for meaning in meanings:
+                definitions = meaning.get('definitions', [])
+                for definition in definitions:
+                    definitions_list.append(definition['definition'])
+                    if len(definitions_list) == 3:  
+                        break
+                if len(definitions_list) == 3:
+                    break
+
+            if definitions_list:
+                definitions_text = "\n".join([f"{i+1}. {definition}" for i, definition in enumerate(definitions_list)])
+                await ctx.send(f"**{word_info['word']}**:\n{definitions_text}")
+            else:
+                await ctx.send(f"No definitions found for {dictionaryword}.")
         else:
-            await ctx.send(f"word not found: {dictionaryword}.")
+            await ctx.send(f"Word not found: {dictionaryword}.")
     except Exception as e:
         await ctx.send(f"An oopsie happened: {str(e)}")
-    
+
 bot.run(TOKEN)
