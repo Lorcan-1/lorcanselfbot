@@ -910,6 +910,7 @@ catart = r'''
                    `----`              selfbot by lawcan
 '''
 def printwithgradient(text):
+    """prints art with a gradient"""
     colors = [Fore.RED, Fore.YELLOW, Fore.GREEN, Fore.CYAN, Fore.BLUE, Fore.MAGENTA]
     lines = text.split('\n')
     for i, line in enumerate(lines):
@@ -920,6 +921,7 @@ def printwithgradient(text):
 printwithgradient(catart)
 
 def printwordwithgradient(word):
+    """prints a word with a gradient"""
     # sets colours
     gradient_colors = [
         Fore.RED,
@@ -930,21 +932,17 @@ def printwordwithgradient(word):
         Fore.CYAN,
         Fore.WHITE,
     ]
-
     # Prints the word 
     gradient_length = len(gradient_colors)
     colored_word = ''.join(f"{gradient_colors[i % gradient_length]}{char}" for i, char in enumerate(word))
-    
     print(colored_word + Style.RESET_ALL)
 
 @bot.before_invoke
 async def log_command(ctx):
+    """logs commands to the terminal"""
     commandused = ctx.command.name
-    
-    
     messagesent = ctx.message.content
     args = messagesent[len(ctx.prefix) + len(commandused):].strip()
-
     command_info = f"Command: `{commandused}` | Arguments: `{args}`"
     printwordwithgradient(command_info)
 
