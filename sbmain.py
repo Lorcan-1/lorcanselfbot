@@ -25,9 +25,10 @@ from colorama import init, Fore, Style
 init()
 
 def cls():
-    if os.name == 'nt':  # Windows
+    """clears terminal"""
+    if os.name == 'nt':  # Windows terminal clear
         os.system('cls')
-    else:  # Linux, macOS, etc.
+    else:  # Linux/macos terminal clear
         os.system('clear')
 
 cls()
@@ -51,14 +52,26 @@ if not TOKEN:
     with open(json_file, "w") as file:
         json.dump(sb, file, indent=4)
 
+
+PREFIX = sb.get("PREFIX", "").strip() # checks for PREFIX within config.json if there is no PREFIX prompts the user to enter it then writes to the file
+if not PREFIX:
+    PREFIX = input("Enter what you want the prefix to be set as ")
+    sb["PREFIX"] = PREFIX
+
+
+    with open(json_file, "w") as file:
+        json.dump(sb, file, indent=4)
+
 WEATHERKEY = sb.get("WEATHERKEY", "").strip() # checks for WEATHERKEY within config.json if there is no WEATHERKEY sets a preset api key until replaced with your own
 if not WEATHERKEY:
     WEATHERKEY = ("6eda74c50a8a47ba6d896888dae26c13")
     sb["WEATHERKEY"] = WEATHERKEY
     with open(json_file, "w") as file:
         json.dump(sb, file, indent=4)    
+        
+prefix = PREFIX
 
-bot = commands.Bot(command_prefix='`', self_bot=True,) # sets the bot variable and sets the prefix for the bot
+bot = commands.Bot(command_prefix=prefix, self_bot=True,) # sets the bot variable and sets the prefix for the bot
 
 @bot.command()
 async def webhookpurge(ctx): # checks if the message was sent in a channel then deletes any existing webhooks 
