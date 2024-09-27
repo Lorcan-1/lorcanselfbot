@@ -941,7 +941,7 @@ def printwordwithgradient(word):
 async def log_command(ctx):
     commandused = ctx.command.name
     
-    # Extracting the full message and slicing off the command
+    
     messagesent = ctx.message.content
     args = messagesent[len(ctx.prefix) + len(commandused):].strip()
 
