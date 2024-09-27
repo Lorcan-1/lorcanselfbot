@@ -21,6 +21,8 @@ import re
 import httpx
 import qrcode
 import io
+from colorama import init, Fore, Style
+init()
 
 computer = wmi.WMI() 
 
@@ -72,7 +74,6 @@ async def webhookpurge(ctx): # checks if the message was sent in a channel then 
 @bot.command()
 async def spam(ctx, Number=None, *, message): # sends a message the amount of times specified
   """spams a string the amount of times specified"""
-
   await ctx.message.delete()
   count = 0
   while count < int(Number):
@@ -877,5 +878,74 @@ async def qrcodegen(ctx, link):
         img.save(buf, format='PNG')
         buf.seek(0)  
         await ctx.send(file=discord.File(buf, filename='qrcode.png'))
-        
-bot.run(TOKEN)
+
+catart = r'''
+       ,
+       \`-._           __
+        \\  `-..____,.'  `.
+         :`.         /    \` .
+         :  )       :      : \
+          ;'        '   ;  |  :
+          )..      .. .:.`.;  :
+         /::...  .:::...   ` ;
+         ; _ '    __        /: \
+         `:o>   /\o_>      ;:. `.
+        `-`.__ ;   __..--- /:.   \
+        === \_/   ;=====_.':.     ;
+         ,/'`--'...`--....        ;
+              ;                    ;
+            .'                      ;
+          .'                        ;
+        .'     ..     ,      .       ;
+       :       ::..  /      ;::.     |
+      /      `.;::.  |       ;:..    ;
+     :         |:.   :       ;:.    ;
+     :         ::     ;:..   |.    ;
+      :       :;      :::....|     |
+      /\     ,/ \      ;:::::;     ;
+    .:. \:..|    :     ; '.--|     ;
+   ::.  :''  `-.,,;     ;'   ;     ;
+.-'. _.'\      / `;      \\,__:      \
+`---'    `----'   ;      /    \\,.,,,/
+                   `----`              selfbot by lawcan
+'''
+def printwithgradient(text):
+    colors = [Fore.RED, Fore.YELLOW, Fore.GREEN, Fore.CYAN, Fore.BLUE, Fore.MAGENTA]
+    lines = text.split('\n')
+    for i, line in enumerate(lines):
+        color = colors[i % len(colors)]
+        print(color + line)
+    print(Style.RESET_ALL)
+
+printwithgradient(catart)
+
+def printwordwithgradient(word):
+    # sets colours
+    gradient_colors = [
+        Fore.RED,
+        Fore.GREEN,
+        Fore.YELLOW,
+        Fore.BLUE,
+        Fore.MAGENTA,
+        Fore.CYAN,
+        Fore.WHITE,
+    ]
+
+    # Prints the word 
+    gradient_length = len(gradient_colors)
+    colored_word = ''.join(f"{gradient_colors[i % gradient_length]}{char}" for i, char in enumerate(word))
+    
+    print(colored_word + Style.RESET_ALL)
+
+@bot.before_invoke
+async def log_command(ctx):
+    commandused = ctx.command.name
+    
+    # Extracting the full message and slicing off the command
+    messagesent = ctx.message.content
+    args = messagesent[len(ctx.prefix) + len(commandused):].strip()
+
+    command_info = f"Command: `{commandused}` | Arguments: `{args}`"
+    printwordwithgradient(command_info)
+
+bot.run(TOKEN, log_handler=None)
