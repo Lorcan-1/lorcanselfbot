@@ -24,6 +24,13 @@ import io
 from colorama import init, Fore, Style
 init()
 
+def cls():
+    if os.name == 'nt':  # Windows
+        os.system('cls')
+    else:  # Linux, macOS, etc.
+        os.system('clear')
+
+cls()
 computer = wmi.WMI() 
 
 folder_sb = os.path.dirname(os.path.realpath(__file__)) # checks for config.json within the file path if it is missing creates then reads from the file
@@ -126,8 +133,8 @@ async def deletechannels(ctx): # deletes all channels in the guild the message w
 @bot.command()
 async def commands(ctx): # a guide to commands the bot has
     await ctx.message.delete()
-    await ctx.send('''```
-- skibidi toilet -
+    printwithgradient('''```
+- lawcan selfbot -
 
 meow - sends an ASCII art of a cat
 lookup - looks up an IP address
@@ -908,7 +915,13 @@ catart = r'''
    ::.  :''  `-.,,;     ;'   ;     ;
 .-'. _.'\      / `;      \\,__:      \
 `---'    `----'   ;      /    \\,.,,,/
-                   `----`              selfbot by lawcan
+                   `----`              
+██       ██████  ██████   ██████  █████  ███    ██     ███████ ███████ ██      ███████ ██████   ██████  ████████ 
+██      ██    ██ ██   ██ ██      ██   ██ ████   ██     ██      ██      ██      ██      ██   ██ ██    ██    ██    
+██      ██    ██ ██████  ██      ███████ ██ ██  ██     ███████ █████   ██      █████   ██████  ██    ██    ██    
+██      ██    ██ ██   ██ ██      ██   ██ ██  ██ ██          ██ ██      ██      ██      ██   ██ ██    ██    ██    
+███████  ██████  ██   ██  ██████ ██   ██ ██   ████     ███████ ███████ ███████ ██      ██████   ██████     ██    
+                                                                                                                 
 '''
 def printwithgradient(text):
     """prints art with a gradient"""
