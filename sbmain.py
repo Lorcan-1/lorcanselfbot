@@ -154,6 +154,7 @@ math - uses eval to complete math equations for you
 weather - gets the weather of a given city name
 time - sends the current time formatted as Y-%m-%d %H:%M:%S
 generatenitro - sends a random nitro.gift link
+dictionary - looks up a word in the dictionary
 ```''')
 
 @bot.command()
