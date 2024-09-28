@@ -73,6 +73,8 @@ prefix = PREFIX
 
 bot = commands.Bot(command_prefix=prefix, self_bot=True,) # sets the bot variable and sets the prefix for the bot
 
+bot.remove_command("help")
+
 @bot.command()
 async def webhookpurge(ctx): # checks if the message was sent in a channel then deletes any existing webhooks 
     """deletes all pre existing webhooks"""
@@ -144,8 +146,9 @@ async def deletechannels(ctx): # deletes all channels in the guild the message w
     return
 
 @bot.command()
-async def commands(ctx): # a guide to commands the bot has
+async def help(ctx): # a guide to commands the bot has
     await ctx.message.delete()
+    direction = await ctx.send("commands sent to terminal")
     printwithgradient('''```
 - lawcan selfbot -
 
@@ -177,6 +180,8 @@ generatenitro - sends a random nitro.gift link
 dictionary - looks up a word in the dictionary
 activity - sets your discord activity
 ```''')
+    await asyncio.sleep(5)
+    await direction.delete()
 
 @bot.command()
 async def iplookup(ctx, TARGET_IP=None): # looks up an ip address using the ip-api api
