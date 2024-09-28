@@ -28,10 +28,10 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`pcinfo`**: Displays the pc components of the computer hosting the selfbot
 - **`time`**: Sends the current time formatted  
 - **`generatenitro`**: Sends a random discord.gift link highly unlikely to ever be an actual link
-- **`dictionary`**: searches a word in the dictionary
+- **`dictionary [word]`**: searches a word in the dictionary
 - **`nitro sniper`**: reads messages for nitro gift links and redeems them for you
-- **`qrcodegen`**: generates a qr code for a given url
-- **`activity`**: changes your discord activity
+- **`qrcodegen [link]`**: generates a qr code for a given url
+- **`activity [activity name]`**: changes your discord activity
 
 
 
