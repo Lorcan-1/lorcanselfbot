@@ -31,6 +31,7 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`dictionary`**: searches a word in the dictionary
 - **`nitro sniper`**: reads messages for nitro gift links and redeems them for you
 - **`qrcodegen`**: generates a qr code for a given url
+- **`activity`**: changes your discord activity
 
 
 
