@@ -175,6 +175,7 @@ weather - gets the weather of a given city name
 time - sends the current time formatted as Y-%m-%d %H:%M:%S
 generatenitro - sends a random nitro.gift link
 dictionary - looks up a word in the dictionary
+activity - sets your discord activity
 ```''')
 
 @bot.command()
@@ -879,7 +880,12 @@ async def redeemgiftcode(channel_id, code): # redeems the code
                 print('\033[31m' + json.dumps(result.json(), indent=4) + '\033[0m')  # evil error message in red to show its evil
         except Exception as e:
             print('\033[31m' + f'An error occurred: {str(e)}' + '\033[0m')  # same thing as the other one in red
-
+@bot.command()
+async def activity(ctx,new_status: str):
+    await ctx.message.delete()
+    status = discord.Status.do_not_disturb
+    await bot.change_presence(status=status, activity=discord.Game(name=new_status))
+    
 @bot.command()
 async def qrcodegen(ctx, link):
     """generates a qrcode based on a given link"""
