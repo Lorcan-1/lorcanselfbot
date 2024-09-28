@@ -52,7 +52,6 @@ if not TOKEN:
     with open(json_file, "w") as file:
         json.dump(sb, file, indent=4)
 
-
 PREFIX = sb.get("PREFIX", "").strip() # checks for PREFIX within config.json if there is no PREFIX prompts the user to enter it then writes to the file
 if not PREFIX:
     PREFIX = input("Enter what you want the prefix to be set as ")
@@ -153,32 +152,32 @@ async def help(ctx): # a guide to commands the bot has
 - lawcan selfbot -
 
 meow - sends an ASCII art of a cat
-lookup - looks up an IP address
-spam - sends a message as many times as you choose (input how many times, then the message)
-ban - bans a user with an optional reason
-kick - kicks a user from the server
-unban - unbans a user
-purge - deletes a specified number of messages
-search - searches Google for a query (currently outdated)
+iplookup [ip address] - looks up an IP address
+spam - [amount] [message] sends a message as many times as you choose (input how many times, then the message)
+ban [user] [reason] - bans a user with an optional reason
+kick [user] - kicks a user from the server
+unban [user] - unbans a user
+purge [amount] - deletes a specified number of messages
+search [query] - searches Google for a query (currently outdated)
 deletechannels - deletes all channels in the server
 createchannels - creates a specified number of text channels with a given name
 massban - bans all members in the server with a reason
-webhookmessage - sends a message via webhook with a specified username
-webhookspam - spams a message a specified number of times using webhooks
+webhookmessage [message] - sends a message via webhook with a specified username
+webhookspam [amount] [message] - spams a message a specified number of times using webhooks
 nuke - deletes all channels, creates new channels, deletes all roles, creates new roles, and bans all members
 spamroles - creates a specified number of roles with a given name
 ascii - generates ASCII art for a given message
 lastraid - fetches the most recent raid completion for a given Destiny username
 nuke2 - deletes all channels, creates new channels, deletes all roles, creates new roles, and bans all members (alternate version with different behavior)
-getpfp - retrieves the profile picture of a specified user or the command author if no user is specified
+getpfp [user] - retrieves the profile picture of a specified user or the command author if no user is specified
 pc info - displays the pc components of the computer hosting the selfbot
-ipping - pings an ip address 
-math - uses eval to complete math equations for you
-weather - gets the weather of a given city name
+ipping [ipaddress] - pings an ip address 
+math [equation] - uses eval to complete math equations for you
+weather [city name] - gets the weather of a given city name
 time - sends the current time formatted as Y-%m-%d %H:%M:%S
 generatenitro - sends a random nitro.gift link
-dictionary - looks up a word in the dictionary
-activity - sets your discord activity
+dictionary [word] - looks up a word in the dictionary
+activity [activity name] - sets your discord activity
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
