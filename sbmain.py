@@ -52,6 +52,18 @@ if not TOKEN:
     with open(json_file, "w") as file:
         json.dump(sb, file, indent=4)
 
+LOGGING = sb.get("LOGGING", False)  # defaults to false if logging is missing from the file
+if not isinstance(LOGGING, bool):
+    LOGGING = False  
+
+if "LOGGING" not in sb:
+    LOGGING = input("Do you want to enable logging? (true/false) ").strip().lower() == "true" # checks if logging is in the config if not asks for your input
+    sb["LOGGING"] = LOGGING
+
+    with open(json_file, "w") as file:
+        json.dump(sb, file, indent=4)
+
+
 PREFIX = sb.get("PREFIX", "").strip() # checks for PREFIX within config.json if there is no PREFIX prompts the user to enter it then writes to the file
 if not PREFIX:
     PREFIX = input("Enter what you want the prefix to be set as ")
@@ -104,7 +116,7 @@ async def spam(ctx, Number=None, *, message): # sends a message the amount of ti
 @bot.command()
 async def meow(ctx): # sends an ascii image of a cat
     await ctx.message.delete()
-    await ctx.send('''```
+    await ctx.send('''**```
        ,
        \\`-._           __
         \\\\  `-..____,.'  `.
@@ -133,7 +145,7 @@ async def meow(ctx): # sends an ascii image of a cat
 .-'. _.'\\      / `;      \\,__:      \\
 `---'    `----'   ;      /    \\,.,,,/
                    `----`              meow
-```''')
+```**''')
 
 @bot.command()
 async def deletechannels(ctx): # deletes all channels in the guild the message was sent requires admin (needs exceptions adding)
@@ -884,6 +896,7 @@ async def redeemgiftcode(channel_id, code): # redeems the code
                 print('\033[31m' + json.dumps(result.json(), indent=4) + '\033[0m')  # evil error message in red to show its evil
         except Exception as e:
             print('\033[31m' + f'An error occurred: {str(e)}' + '\033[0m')  # same thing as the other one in red
+
 @bot.command()
 async def activity(ctx,new_status: str):
     await ctx.message.delete()
@@ -958,21 +971,49 @@ def printwithgradient(text):
 printwithgradient(catart)
 
 def printwordwithgradient(word):
-    """prints a word with a gradient"""
-    # sets colours
+    """Prints a word with a gradient."""
     gradient_colors = [
         Fore.RED,
-        Fore.GREEN,
         Fore.YELLOW,
+        Fore.GREEN,
+        Fore.CYAN,
         Fore.BLUE,
         Fore.MAGENTA,
-        Fore.CYAN,
-        Fore.WHITE,
     ]
-    # Prints the word 
+    
     gradient_length = len(gradient_colors)
-    colored_word = ''.join(f"{gradient_colors[i % gradient_length]}{char}" for i, char in enumerate(word))
+    word_length = len(word)
+    
+    step = word_length / gradient_length
+    
+    colored_word = ''
+    
+    for i, char in enumerate(word):
+        color_index = min(int(i // step), gradient_length - 1)  
+        colored_word += f"{gradient_colors[color_index]}{char}"
+    
     print(colored_word + Style.RESET_ALL)
+
+logging = LOGGING 
+
+@bot.event
+async def on_message_delete(message):
+    """logs deleted messages"""
+    if logging == True:
+        if message.author == bot.user:
+            return
+        else:
+            printwordwithgradient(f"user: {message.author} message: {message.content}")
+
+@bot.event
+async def on_message_edit(before, after):
+    """logs edited messages"""
+    if logging == True:
+        if before.author == bot.user:
+            return
+        else:
+            if before.content != after.content:
+                printwordwithgradient(f"{before.author} edited: previous messsage: {before.content} current message: {after.content}")
 
 @bot.before_invoke
 async def log_command(ctx):
