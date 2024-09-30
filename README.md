@@ -1,6 +1,6 @@
 # Lorcan Selfbot
 
-This is a selfbot for Discord, developed using `discord.py-self`. This selfbot includes various commands for managing a Discord server, such as deleting channels, banning users, spamming messages, and more. Note that using selfbots in Discord is against Terms of Service, and your account may be banned for using one.
+This is a selfbot for Discord, developed using `discord.py-self`. This selfbot includes various commands for managing a Discord server, finding information online, automating messages and more. Note that using selfbots in Discord is against Terms of Service, and your account may be banned for using one.
 
 ## Features
 
