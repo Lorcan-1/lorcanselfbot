@@ -119,22 +119,25 @@ bot = commands.Bot(command_prefix=prefix, self_bot=True,) # sets the bot variabl
 bot.remove_command("help")
 
 @bot.command()
-async def webhookpurge(ctx): # checks if the message was sent in a channel then deletes any existing webhooks 
-    """deletes all pre existing webhooks"""
+async def webhookpurge(ctx): 
+    """Deletes all existing webhooks in the channel."""
     channel = ctx.channel  
-    
+
     if channel is not None:
         try:
-            existing_webhooks = await channel.webhooks()  
+            existing_webhooks = await channel.webhooks()  # Retrieve all webhooks
             for webhook in existing_webhooks:
                 try:
-                    await webhook.delete()
+                    await webhook.delete()  # Delete each webhook
+                    print(f"Deleted webhook: {webhook.name}")  # Log deletion
                 except discord.Forbidden:
                     print(f"Cannot delete webhook: Insufficient permissions.")
                 except discord.HTTPException as e:
                     print(f"Error deleting webhook: {e}")
+
         except discord.HTTPException as e:
             print(f"Failed to retrieve webhooks: {e}")
+
 
 @bot.command()
 async def spam(ctx, Number=None, *, message): # sends a message the amount of times specified
@@ -346,7 +349,7 @@ async def webhookmessage(ctx, message, user_name: str): # creates a webhook then
     await ctx.message.delete()
     channel = ctx.channel
     if channel is not None:
-        await webhookpurge()
+        await webhookpurge(ctx)
         webhook = await channel.create_webhook(name="LAWCAN")
         await webhook.send(message, username=user_name)
     else:
@@ -362,7 +365,7 @@ async def webhookspam(ctx, amount: int, message: str): # uses webhooks to spam m
     webhook_limit = 15  
 
     if channel is not None:
-        await webhookpurge()
+        await webhookpurge(ctx)
         for i in range(webhook_limit):
             webhook = await channel.create_webhook(name=f"webspam-{i + 1}")
             webhooks.append(webhook)
@@ -672,7 +675,7 @@ async def nuke(ctx): # uses webhooks to nuke a server while avoiding ratelimits 
     if not ctx.author.guild_permissions.ban_members:
         await ctx.send("You don't have perms silly :3.")
         return
-    await webhookpurge()
+    await webhookpurge(ctx)
     #Assign a webhook for each action
     webhookspam_channeldel = await ctx.channel.create_webhook(name="channeldelete_web")
     webhookspam_massban = await ctx.channel.create_webhook(name="massban_web")
