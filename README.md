@@ -82,6 +82,6 @@ This Lorcan Selfbot, developed using `discord.py-self`, is designed to automate 
 
 ## Repository
 
-You can find the repository for this project at: [repository]([https://github.com/benson7618/Lorcanselfbot.git)]
+You can find the repository for this project at: [repository]([https://github.com/benson7618/Lorcanselfbot.git)
 
 -Lawcan
