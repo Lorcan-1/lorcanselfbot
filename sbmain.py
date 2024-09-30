@@ -43,26 +43,56 @@ if os.path.exists(json_file):
 else:
     sb = {}
 
-TOKEN = sb.get("TOKEN", "").strip() # checks for TOKEN within config.json if there is no TOKEN prompts the user to enter it then writes to the file
-if not TOKEN:
-    TOKEN = input("Enter your token >.< ")
-    sb["TOKEN"] = TOKEN
+async def tokenchecker(token):
+    """checks if discord token is valid"""
+    url = "https://discord.com/api/v9/users/@me"
+    headers = {
+        "Authorization": token,
+        "User-Agent": "DiscordBot (https://discord.com, v1)"
+    }
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, headers=headers)
+        if response.status_code == 200:
+            return True  
+        else:
+            return False  
+
+async def GetToken(sb, json_file):
+    """Prompts the user for their discord token"""
+    TOKEN = sb.get("TOKEN", "").strip()
+
+    while not TOKEN or not await tokenchecker(TOKEN):
+        TOKEN = input("Enter a valid Discord token >.< ").strip()
+        if await tokenchecker(TOKEN):
+            sb["TOKEN"] = TOKEN
+            with open(json_file, "w") as file:
+                json.dump(sb, file, indent=4)
+            printwordwithgradient("Token accepted and saved to config.json")
+        else:
+            printwordwithgradient("Invalid token, please enter a valid token to continue: ")
+
+    return TOKEN
+
+TOKEN = asyncio.run(GetToken(sb, json_file))
+
+if "LOGGING" not in sb or not isinstance(sb["LOGGING"], bool):
+    LOGGING = input("Do you want to enable logging? (true/false) ").strip().lower()  
+
+    # Validate input
+    if LOGGING == "true":
+        sb["LOGGING"] = True
+    elif LOGGING == "false":
+        sb["LOGGING"] = False
+    else:
+        print("Invalid input. Defaulting to logging disabled.")
+        sb["LOGGING"] = False
 
 
     with open(json_file, "w") as file:
         json.dump(sb, file, indent=4)
 
-LOGGING = sb.get("LOGGING", False)  # defaults to false if logging is missing from the file
-if not isinstance(LOGGING, bool):
-    LOGGING = False  
-
-if "LOGGING" not in sb:
-    LOGGING = input("Do you want to enable logging? (true/false) ").strip().lower() == "true" # checks if logging is in the config if not asks for your input
-    sb["LOGGING"] = LOGGING
-
-    with open(json_file, "w") as file:
-        json.dump(sb, file, indent=4)
-
+LOGGING = sb.get("LOGGING", False)  
 
 PREFIX = sb.get("PREFIX", "").strip() # checks for PREFIX within config.json if there is no PREFIX prompts the user to enter it then writes to the file
 if not PREFIX:
@@ -78,8 +108,10 @@ if not WEATHERKEY:
     WEATHERKEY = ("6eda74c50a8a47ba6d896888dae26c13")
     sb["WEATHERKEY"] = WEATHERKEY
     with open(json_file, "w") as file:
-        json.dump(sb, file, indent=4)    
-        
+        json.dump(sb, file, indent=4)  
+
+cls()  
+
 prefix = PREFIX
 
 bot = commands.Bot(command_prefix=prefix, self_bot=True,) # sets the bot variable and sets the prefix for the bot
@@ -394,7 +426,7 @@ async def deleteroles(ctx): # loops through every role in a server and deletes t
 
 @bot.command()
 async def search(ctx, *, query: str): # uses bs4 html parsing to find the first 6 webpages that show up in results from google for your given search query
-    """searches for the 1st six search results using google"""
+    """searches for the first six search results using google"""
     await ctx.message.delete()
     search_url = "https://www.google.com/search"
     params = {"q": query}
