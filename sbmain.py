@@ -1052,8 +1052,10 @@ async def on_message_delete(message):
     if logging == True:
         if message.author == bot.user:
             return
+        elif message.guild is None:
+            printwordwithgradient(f"user: {message.author} deleted message: {message.content} in: Direct messages")
         else:
-            printwordwithgradient(f"user: {message.author} message: {message.content}")
+            printwordwithgradient(f"user: {message.author} deleted message: {message.content} in: {message.guild}")
 
 @bot.event
 async def on_message_edit(before, after):
@@ -1061,9 +1063,12 @@ async def on_message_edit(before, after):
     if logging == True:
         if before.author == bot.user:
             return
-        else:
-            if before.content != after.content:
-                printwordwithgradient(f"{before.author} edited: previous messsage: {before.content} current message: {after.content}")
+        if before.content != after.content:
+            if before.guild is None:
+                printwordwithgradient(f"{before.author} edited: previous messsage: {before.content} current message: {after.content} in: Direct messages")
+            else:
+                printwordwithgradient(f"{before.author} edited: previous messsage: {before.content} current message: {after.content} in: {before.guild}")
+ 
 
 @bot.before_invoke
 async def log_command(ctx):
