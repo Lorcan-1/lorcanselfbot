@@ -918,7 +918,10 @@ async def on_message(ctx):
         ready = True
     
     if bot.user.mention in ctx.content:
-        printwordwithgradient(f"({bot.user}) mentioned by: ({ctx.author}) message: {ctx.content}")
+        if ctx.guild == None:
+            printwordwithgradient(f"({bot.user}) mentioned by: ({ctx.author}) message: {ctx.content} in: Direct messages")
+        else:
+            printwordwithgradient(f"({bot.user}) mentioned by: ({ctx.author}) message: {ctx.content} in: {ctx.guild}")
 
     # checks messages for discord gift links
     if coderegex.search(ctx.content):
