@@ -919,9 +919,9 @@ async def on_message(ctx):
     
     if bot.user.mention in ctx.content:
         if ctx.guild == None:
-            printwordwithgradient(f"({bot.user}) mentioned by: ({ctx.author}) message: {ctx.content} in: Direct messages")
+            printwordwithgradient(f"({bot.user}) mentioned by: ({ctx.author}) | message: {ctx.content} | in: Direct messages")
         else:
-            printwordwithgradient(f"({bot.user}) mentioned by: ({ctx.author}) message: {ctx.content} in: {ctx.guild}")
+            printwordwithgradient(f"({bot.user}) mentioned by: ({ctx.author}) | message: {ctx.content} | in: {ctx.guild}")
 
     # checks messages for discord gift links
     if coderegex.search(ctx.content):
@@ -1053,9 +1053,9 @@ async def on_message_delete(message):
         if message.author == bot.user:
             return
         elif message.guild is None:
-            printwordwithgradient(f"user: {message.author} deleted message: {message.content} in: Direct messages")
+            printwordwithgradient(f"user: {message.author} | deleted message: {message.content} | in: Direct messages")
         else:
-            printwordwithgradient(f"user: {message.author} deleted message: {message.content} in: {message.guild}")
+            printwordwithgradient(f"user: {message.author} | deleted message: {message.content} | in: {message.guild}")
 
 @bot.event
 async def on_message_edit(before, after):
@@ -1065,9 +1065,9 @@ async def on_message_edit(before, after):
             return
         if before.content != after.content:
             if before.guild is None:
-                printwordwithgradient(f"{before.author} edited: previous messsage: {before.content} current message: {after.content} in: Direct messages")
+                printwordwithgradient(f"{before.author} | edited: previous messsage: {before.content} | current message: {after.content} | in: Direct messages")
             else:
-                printwordwithgradient(f"{before.author} edited: previous messsage: {before.content} current message: {after.content} in: {before.guild}")
+                printwordwithgradient(f"{before.author} | edited: previous messsage: {before.content} | current message: {after.content} | in: {before.guild}")
  
 
 @bot.before_invoke
