@@ -1078,5 +1078,12 @@ async def log_command(ctx):
     args = messagesent[len(ctx.prefix) + len(commandused):].strip()
     command_info = f"Command: `{commandused}` | Arguments: `{args}`"
     printwordwithgradient(command_info)
+    
+@bot.command()
+async def clear(ctx):
+    """clears the terminal"""
+    await ctx.message.delete()  
+    cls()
+    printwithgradient(catart)
 
 bot.run(TOKEN, log_handler=None)
