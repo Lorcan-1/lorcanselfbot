@@ -225,6 +225,7 @@ time - sends the current time formatted as Y-%m-%d %H:%M:%S
 generatenitro - sends a random nitro.gift link
 dictionary [word] - looks up a word in the dictionary
 activity [activity name] - sets your discord activity
+clear - resets the terminal and deletes all previous logs
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
