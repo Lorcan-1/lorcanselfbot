@@ -225,7 +225,7 @@ time - sends the current time formatted as Y-%m-%d %H:%M:%S
 generatenitro - sends a random nitro.gift link
 dictionary [word] - looks up a word in the dictionary
 activity [activity name] - sets your discord activity
-clear - resets the terminal and deletes all previous logs
+editconfig [json file] [key] [value] - edits the config file
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
@@ -1079,12 +1079,18 @@ async def log_command(ctx):
     args = messagesent[len(ctx.prefix) + len(commandused):].strip()
     command_info = f"Command: `{commandused}` | Arguments: `{args}`"
     printwordwithgradient(command_info)
-    
+
 @bot.command()
 async def clear(ctx):
     """clears the terminal"""
     await ctx.message.delete()  
     cls()
     printwithgradient(catart)
+
+@bot.command()
+async def terminaloutput(ctx, art):
+    """prints out a message with a gradient"""
+    await ctx.message.delete()
+    printwithgradient(art)
 
 bot.run(TOKEN, log_handler=None)
