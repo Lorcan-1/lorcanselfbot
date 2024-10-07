@@ -1093,4 +1093,17 @@ async def terminaloutput(ctx, art):
     await ctx.message.delete()
     printwithgradient(art)
 
+@bot.command()
+async def guilds(ctx):
+    """prints all guilds the user is in"""
+    await ctx.message.delete()
+    printwordwithgradient(f"list of guilds {bot.user} is in")
+    for guild in bot.guilds:
+        guild_name = f" Guild: {guild.name} "  
+        boxwidth = len(guild_name)
+        #makes it look all pretty and adds boxes around the guild name
+        printwordwithgradient("+" + "-" * boxwidth + "+")
+        printwordwithgradient("|" + guild_name + "|")
+        printwordwithgradient("+" + "-" * boxwidth + "+")
+
 bot.run(TOKEN, log_handler=None)
