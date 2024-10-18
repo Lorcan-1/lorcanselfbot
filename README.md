@@ -49,7 +49,7 @@ This Lorcan Selfbot, developed using `discord.py-self`, is designed to automate 
 1. **Clone the repository**:
 
     ```bash
-    git clone https://github.com/benson7618/Lorcanselfbot.git
+    git clone (https://github.com/Lorcan-1/lorcanselfbot)
     
     cd Lorcanselfbot
     ```
