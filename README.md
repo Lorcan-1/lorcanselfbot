@@ -51,7 +51,7 @@ This Lorcan Selfbot, developed using `discord.py-self`, is designed to automate 
     ```bash
     git clone https://github.com/Lorcan-1/lorcanselfbot
     
-    cd Lorcanselfbot
+    cd lorcanselfbot
     ```
 
 2. **Install dependencies**:
