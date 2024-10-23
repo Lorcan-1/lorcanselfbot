@@ -12,7 +12,6 @@ import urllib.parse
 from urllib.parse import quote
 import aiohttp
 from ping3 import ping
-import wmi
 import GPUtil
 import psutil
 import random
@@ -21,6 +20,9 @@ import re
 import httpx
 import qrcode
 import io
+import platform
+import subprocess
+import platform
 from colorama import init, Fore, Style
 init()
 
@@ -30,9 +32,7 @@ def cls():
         os.system('cls')
     else:  # Linux/macos terminal clear
         os.system('clear')
-
 cls()
-computer = wmi.WMI() 
 
 folder_sb = os.path.dirname(os.path.realpath(__file__)) # checks for config.json within the file path if it is missing creates then reads from the file
 json_file = os.path.join(folder_sb, 'config.json')
@@ -800,42 +800,102 @@ async def editconfig(ctx, json_file, key, value): # writes values to the json fi
     with open(json_file, "w") as file:
         json.dump(sb, file, indent=4)
 
+def get_linux_distro():
+    """
+    Retrieves the Linux distribution name from /etc/os-release
+    """
+    try:
+        with open("/etc/os-release") as f:
+            lines = f.readlines()
+        for line in lines:
+            if line.startswith("PRETTY_NAME="):
+                return line.split("=")[1].strip().replace('"', '')
+    except FileNotFoundError:
+        return "Unknown Linux Distro"
+
 def get_pc_parts():
     """
-    returns each pc component
+    Returns each PC component information, works on both Linux and Windows.
     """
-    #get cpuname
+    # Declare variables
     cpuname = ""
-    for cpu in computer.Win32_Processor(): 
-        cpuname = f"**CPU**: {cpu.Name}\n"
-
-    #get gpu name
     gpuname = ""
+    raminfo = ""
+    diskinfo = ""
+    
+    # Check platform
+    ostype = platform.system().lower()
+
+    # Get CPU name
+    if ostype == "windows":
+        import wmi
+        computer = wmi.WMI()
+        for cpu in computer.Win32_Processor(): 
+            cpuname = f"**CPU**: {cpu.Name}\n"
+    else:
+        try:
+            with open("/proc/cpuinfo") as f:
+                for line in f:
+                    if "model name" in line:
+                        cpuname = f"**CPU**: {line.split(':')[1].strip()}\n"
+                        break
+        except FileNotFoundError:
+            cpuname = "**CPU**: Could not determine CPU name\n"
+
+    # Get GPU name
     gpus = GPUtil.getGPUs()
     if gpus:
         for gpu in gpus:
             gpuname += f"**GPU**: {gpu.name}\n"
     else:
-        gpuname = "**GPU**: No dedicated GPU found\n"
+        try:
+            # nvidia on linux makes me sad
+            result = subprocess.run(['lspci'], stdout=subprocess.PIPE)
+            gpu_info = result.stdout.decode()
+            gpu_lines = [line for line in gpu_info.splitlines() if 'VGA' in line or '3D controller' in line]
+            if gpu_lines:
+                gpuname = "**GPU**: " + ", ".join([line.split(":")[-1].strip() for line in gpu_lines]) + "\n"
+            else:
+                gpuname = "**GPU**: No dedicated GPU found\n"
+        except Exception:
+            gpuname = "**GPU**: Could not determine GPU info\n"
 
-    #getraminfo
-    raminfo = ""
-    for ram in computer.Win32_PhysicalMemory():
-        raminfo += f"**RAM**: {ram.Manufacturer} {int(ram.Capacity) / (1024 ** 3):.2f} GB\n"
+    # Get RAM info
+    if ostype == "windows":
+        for ram in computer.Win32_PhysicalMemory():
+            raminfo += f"**RAM**: {ram.Manufacturer} {int(ram.Capacity) / (1024 ** 3):.2f} GB\n"
+    else:
+        total_ram_gb = psutil.virtual_memory().total / (1024 ** 3)
+        raminfo = f"**RAM**: Total {total_ram_gb:.2f} GB\n"
 
-    #get diskinfo
-    diskinfo = ""
-    for disk in computer.Win32_DiskDrive():
-        diskinfo += f"**Disk Drive**: {disk.Model} ({int(disk.Size) / (1024 ** 3):.2f} GB)\n"
+    # Get Disk info
+    if ostype == "windows":
+        for disk in computer.Win32_DiskDrive():
+            diskinfo += f"**Disk Drive**: {disk.Model} ({int(disk.Size) / (1024 ** 3):.2f} GB)\n"
+    else:
+        try:
+            result = subprocess.run(['lsblk', '-o', 'NAME,SIZE,MODEL'], stdout=subprocess.PIPE)
+            disk_lines = result.stdout.decode().splitlines()[1:]  # Skip the header
+            diskinfo = "**Disk Drives**:\n"
+            for line in disk_lines:
+                if not line.strip().startswith("├") and not line.strip().startswith("└"):
+                    diskinfo += f"- {line.strip()}\n"
+        except Exception:
+            diskinfo = "**Disk Drive**: Could not retrieve disk info\n"
 
-    #get the total amount of ram
+    # Get total amount of RAM
     total_ram = psutil.virtual_memory().total / (1024 ** 3)
-    ostype = os.name
-    if ostype == "nt":
-        ostype = "windows"
-    osname = f"**Operating system**: {ostype}"
+    
+    # Get OS name
+    osname = f"**Operating System**: {ostype.capitalize()}"
 
-    #list of everything
+    if ostype == "linux":
+        distro = get_linux_distro()
+        osname = f"**Operating System**: Linux ({distro})"
+    else:
+        osname = f"**Operating System**: {ostype.capitalize()}"
+
+    # list of parts
     pcparts = (
         f"{cpuname}"
         f"{gpuname}"
@@ -844,6 +904,7 @@ def get_pc_parts():
         f"{diskinfo}"
         f"{osname}"
     )
+    
     return pcparts
 
 @bot.command()
@@ -1058,17 +1119,6 @@ async def on_message_delete(message):
         else:
             printwordwithgradient(f"user: {message.author} | deleted message: {message.content} | in: {message.guild}")
 
-@bot.event
-async def on_message_edit(before, after):
-    """logs edited messages"""
-    if logging == True:
-        if before.author == bot.user:
-            return
-        if before.content != after.content:
-            if before.guild is None:
-                printwordwithgradient(f"{before.author} | edited: previous messsage: {before.content} | current message: {after.content} | in: Direct messages")
-            else:
-                printwordwithgradient(f"{before.author} | edited: previous messsage: {before.content} | current message: {after.content} | in: {before.guild}")
  
 
 @bot.before_invoke
