@@ -24,6 +24,7 @@ import platform
 import subprocess
 import platform
 from colorama import init, Fore, Style
+from googletrans import Translator, LANGUAGES
 init()
 
 def cls():
@@ -33,6 +34,9 @@ def cls():
     else:  # Linux/macos terminal clear
         os.system('clear')
 cls()
+
+translator = Translator()
+
 
 folder_sb = os.path.dirname(os.path.realpath(__file__)) # checks for config.json within the file path if it is missing creates then reads from the file
 json_file = os.path.join(folder_sb, 'config.json')
@@ -1155,5 +1159,24 @@ async def guilds(ctx):
         printwordwithgradient("+" + "-" * boxwidth + "+")
         printwordwithgradient("|" + guild_name + "|")
         printwordwithgradient("+" + "-" * boxwidth + "+")
+
+languagenames = {code: name.capitalize() for code, name in LANGUAGES.items()}
+
+@bot.command()
+async def translate(ctx, language: str, *, text: str):
+    """
+    Translates text to the specified language
+    """
+    await ctx.message.delete()
+    try:
+        # translates text to the specified language
+        translation = translator.translate(text, dest=language)
+        # gets the full language name
+        fulllangname = languagenames.get(language, language)
+        # sends the translated text
+        await ctx.send(f"**Language {fulllangname}:**\n{translation.text}")
+    except Exception as e:
+        # error handling
+        await ctx.send(f"Error: {str(e)}")
 
 bot.run(TOKEN, log_handler=None)
