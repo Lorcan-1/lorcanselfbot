@@ -37,7 +37,7 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`mention logging`**: logs all mentions of the user in the terminal to avoid ghost pings
 - **`translate [language] [text]`**: translates text to a different language using google translate
 - **`cat`**: sends a random cat image
-
+- **`dog`**: sends a random dog image
 
 
 
