@@ -1179,5 +1179,16 @@ async def translate(ctx, language: str, *, text: str):
     except Exception as e:
         # error handling
         await ctx.send(f"Error: {str(e)}")
+        
+@bot.command()
+async def cat(ctx):
+    """sends a random cat image"""
+    await ctx.message.delete()
+    caturl = "https://api.thecatapi.com/v1/images/search"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(caturl) as response:
+            catdata = await response.json()
+            catimage = catdata[0]['url']
+            await ctx.send(catimage)
 
 bot.run(TOKEN, log_handler=None)
