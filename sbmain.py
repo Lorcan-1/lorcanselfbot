@@ -231,6 +231,8 @@ dictionary [word] - looks up a word in the dictionary
 activity [activity name] - sets your discord activity
 editconfig [json file] [key] [value] - edits the config file
 translate [language] [text] - translates text using google translate
+cat - sends a cat image
+dog - sends a dog image
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
