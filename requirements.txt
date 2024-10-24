@@ -11,3 +11,4 @@ psutil
 httpx
 qrcode
 colorama
+googletrans
