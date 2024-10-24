@@ -233,6 +233,7 @@ editconfig [json file] [key] [value] - edits the config file
 translate [language] [text] - translates text using google translate
 cat - sends a cat image
 dog - sends a dog image
+usersearch - searches a user and prints sites found with said user
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
@@ -1204,4 +1205,51 @@ async def dog(ctx):
             dogimage = dogdata['message']
             await ctx.send(dogimage)
 
+def check_username(username):
+    websites = {
+        # Social Media
+        "GitHub": f"https://github.com/{username}",
+        "Twitter": f"https://twitter.com/{username}",
+        "Instagram": f"https://www.instagram.com/{username}/",
+        "Reddit": f"https://www.reddit.com/user/{username}/",
+        "Facebook": f"https://www.facebook.com/{username}",
+        "LinkedIn": f"https://www.linkedin.com/in/{username}",
+        "TikTok": f"https://www.tiktok.com/@{username}",
+        "Pinterest": f"https://www.pinterest.com/{username}/",
+        "Tumblr": f"https://{username}.tumblr.com",
+        
+        # Developer Platforms
+        "Stack Overflow": f"https://stackoverflow.com/users/{username}",
+        "GitLab": f"https://gitlab.com/{username}",
+        "Bitbucket": f"https://bitbucket.org/{username}/",
+        "CodePen": f"https://codepen.io/{username}",
+        
+        # Other Platforms
+        "Spotify": f"https://open.spotify.com/user/{username}",
+        "Twitch": f"https://www.twitch.tv/{username}",
+        "SoundCloud": f"https://soundcloud.com/{username}",
+        "Dribbble": f"https://dribbble.com/{username}",
+        "Flickr": f"https://www.flickr.com/people/{username}/",
+        "Vimeo": f"https://vimeo.com/{username}",
+        "WordPress": f"https://{username}.wordpress.com",
+    }
+
+    found_accounts = []
+
+    for site, url in websites.items():
+        response = requests.get(url)
+        if response.status_code == 200:
+            found_accounts.append((site, url))
+
+    return found_accounts
+
+@bot.command()
+async def usersearch(ctx, username: str):
+    """checks for accounts with the same username"""
+    await ctx.message.delete()
+    found_accounts = check_username(username)
+    if found_accounts:
+        accounts_text = "\n".join([f"[{site}]({url})" for site, url in found_accounts])
+        printwordwithgradient(f"Found accounts with the username \n {username}\n{accounts_text}")
+        
 bot.run(TOKEN, log_handler=None)
