@@ -38,6 +38,8 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`translate [language] [text]`**: translates text to a different language using google translate
 - **`cat`**: sends a random cat image
 - **`dog`**: sends a random dog image
+- **`usersearch [user]`**: makes post requests so sites with a username and print the users found with said name
+
 
 
 
