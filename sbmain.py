@@ -1191,4 +1191,15 @@ async def cat(ctx):
             catimage = catdata[0]['url']
             await ctx.send(catimage)
 
+@bot.command()
+async def dog(ctx):
+    """sends a random dog image"""
+    await ctx.message.delete()
+    dogurl = "https://dog.ceo/api/breeds/image/random"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(dogurl) as response:
+            dogdata = await response.json()
+            dogimage = dogdata['message']
+            await ctx.send(dogimage)
+
 bot.run(TOKEN, log_handler=None)
