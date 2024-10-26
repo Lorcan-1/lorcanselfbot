@@ -236,6 +236,7 @@ dog - sends a dog image
 usersearch [username] - searches a user and prints sites found with said user
 massdm [message] - sends a message to all users in the server
 massping [message] - pings all users in the server with an optional message
+catfact - sends a random cat fact
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
@@ -1278,5 +1279,16 @@ async def massdm(ctx, meowsage: str):
                     printwordwithgradient(f"Could not message: {member}")
     except Exception as e:
         printwordwithgradient(f"Error: {e}")
+
+@bot.command()
+async def catfact(ctx):
+    """sends a random cat fact"""
+    await ctx.message.delete()
+    catfacturl = "https://catfact.ninja/fact"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(catfacturl) as response:
+            catfactdata = await response.json()
+            catfact = catfactdata['fact']
+            await ctx.send(f"catfact: {catfact}")
 
 bot.run(TOKEN, log_handler=None)
