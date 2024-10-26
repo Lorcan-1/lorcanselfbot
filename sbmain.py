@@ -233,7 +233,9 @@ editconfig [json file] [key] [value] - edits the config file
 translate [language] [text] - translates text using google translate
 cat - sends a cat image
 dog - sends a dog image
-usersearch - searches a user and prints sites found with said user
+usersearch [username] - searches a user and prints sites found with said user
+massdm [message] - sends a message to all users in the server
+massping [message] - pings all users in the server with an optional message
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
@@ -1251,5 +1253,30 @@ async def usersearch(ctx, username: str):
     if found_accounts:
         accounts_text = "\n".join([f"[{site}]({url})" for site, url in found_accounts])
         printwordwithgradient(f"Found accounts with the username \n {username}\n{accounts_text}")
-        
+
+@bot.command()
+async def massping(ctx, meowsage: str):
+    """pings everyone in the server individually with an optional message"""
+    try:
+        await ctx.message.delete()
+        for member in ctx.guild.members:
+                if member != ctx.author:
+                    await ctx.send(f"{member.mention} {meowsage}")
+    except Exception as e: 
+        printwordwithgradient(f"Error: {e}")
+
+@bot.command()
+async def massdm(ctx, meowsage: str):
+    """direct messages every member in the server with a message"""
+    try:
+        await ctx.message.delete()
+        for member in ctx.guild.members:
+            if member != ctx.author:
+                try:
+                    await member.send(meowsage)
+                except discord.Forbidden:
+                    printwordwithgradient(f"Could not message: {member}")
+    except Exception as e:
+        printwordwithgradient(f"Error: {e}")
+
 bot.run(TOKEN, log_handler=None)
