@@ -41,6 +41,8 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`usersearch [user]`**: makes post requests so sites with a username and print the users found with said name
 - **`massping [message]`** pings every user in the memberlist with an optional message arguement
 - **`massdm [message]`** dms every memeber in the memberlist with a message
+- **`crypto [currency]`** looks up the current value for a crypto currency
+
 
 
 
