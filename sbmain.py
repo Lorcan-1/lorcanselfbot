@@ -237,6 +237,7 @@ usersearch [username] - searches a user and prints sites found with said user
 massdm [message] - sends a message to all users in the server
 massping [message] - pings all users in the server with an optional message
 catfact - sends a random cat fact
+crypto [coin] - gets the price of a specified cryptocurrency
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
@@ -471,7 +472,7 @@ async def ascii(ctx, *, message): # uses pyfiglets library to change your letter
     ascii_art = pyfiglet.figlet_format(message)
     await ctx.send(f"```{ascii_art}```")
 
-API_KEY = 'a63ac83a451949e1ae91fe3bbf2ee450'#replace with your own api key if you want >.<
+API_KEY = 'ec05741ca2d94292b8aef3537e6421fc'#replace with your own api key if you want >.<
 BASE_URL = 'https://www.bungie.net/Platform/Destiny2/'
 
 headers = {
@@ -580,7 +581,7 @@ async def lastraid(ctx, username: str = None): # sends the most recent raid from
     await ctx.message.delete()
     """sends the last raid completed by a user"""
     if username is None:
-        username = "lawcan#7065"  
+        username = "bring hotswapping back :)#5380"  
     membership_id, membership_type, error = get_membership_id_and_type(username)
     if error:
         await ctx.send(error)
@@ -1279,6 +1280,7 @@ async def massdm(ctx, meowsage: str):
                     printwordwithgradient(f"Could not message: {member}")
     except Exception as e:
         printwordwithgradient(f"Error: {e}")
+        pass
 
 @bot.command()
 async def catfact(ctx):
@@ -1291,4 +1293,39 @@ async def catfact(ctx):
             catfact = catfactdata['fact']
             await ctx.send(f"catfact: {catfact}")
 
+
+crypto_map = {
+    "btc": "bitcoin",
+    "eth": "ethereum",
+    "ltc": "litecoin",
+    "doge": "dogecoin",
+    "xrp": "ripple",
+    "ada": "cardano",
+    "sol": "solana",
+    "dot": "polkadot",
+    "bnb": "binancecoin",
+    "matic": "matic-network",
+    "xmr": "monero",
+}
+
+@bot.command()
+async def crypto(ctx, cryptocurrency: str):
+    """Gets the current price of a cryptocurrency"""
+    await ctx.message.delete()
+
+    crypto_name = crypto_map.get(cryptocurrency.lower(), cryptocurrency.lower())
+
+    cryptourl = f"https://api.coingecko.com/api/v3/simple/price?ids={crypto_name}&vs_currencies=usd"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(cryptourl) as response:
+            if response.status == 200:
+                data = await response.json()
+                if crypto_name in data:
+                    price = data[crypto_name]['usd']
+                    await ctx.send(f"{cryptocurrency.upper()}: ${price}")
+                else:
+                    await ctx.send("Cryptocurrency not found. Please try another.")
+            else:
+                await ctx.send("Failed to retrieve data. Please try again later.")
+                
 bot.run(TOKEN, log_handler=None)
