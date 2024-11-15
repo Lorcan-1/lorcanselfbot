@@ -239,6 +239,8 @@ massping [message] - pings all users in the server with an optional message
 catfact - sends a random cat fact
 crypto [coin] - gets the price of a specified cryptocurrency
 uwuify [text] - uwuifies text
+nickname [nickname] [optional user] - changes your nickname or changes a users nickname
+nicknamespam - changes your nickname to a random 32 character string repeatedly
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
@@ -1353,5 +1355,36 @@ async def uwuify(ctx, *, message: str):
     )
     
     await ctx.send(uwuified) #sends the uwuified message
+
+
+@bot.command()
+async def nickname(ctx, nickname: str, user: discord.Member = None):
+    """Changes the bot's nickname in the server to the specified nickname"""
+    await ctx.message.delete()
+    if user is None:
+        user = ctx.author
+    try:
+        await user.edit(nick=nickname)
+        await ctx.send(f"Nickname changed to {nickname}")
+    except discord.Forbidden:
+        printwordwithgradient("Could not change nickname. Missing permissions.")
+    except discord.HTTPException as e:
+        printwordwithgradient(f"An error occurred: {e}")
+
+def randomname(length=32):
+    characters = string.ascii_letters + string.digits + string.punctuation
+    return ''.join(random.choice(characters) for _ in range(length))
+
+@bot.command()
+async def nicknamespam(ctx,):
+    await ctx.message.delete()
+    while True:
+        try:
+            await ctx.guild.me.edit(nick=randomname())
+        except discord.Forbidden:
+            printwordwithgradient("Could not change nickname. Missing permissions.")
+            break
+        except discord.HTTPException as e:
+            printwordwithgradient(f"An error occurred: {e}")
 
 bot.run(TOKEN, log_handler=None)
