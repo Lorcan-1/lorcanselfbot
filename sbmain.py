@@ -238,6 +238,7 @@ massdm [message] - sends a message to all users in the server
 massping [message] - pings all users in the server with an optional message
 catfact - sends a random cat fact
 crypto [coin] - gets the price of a specified cryptocurrency
+uwuify [text] - uwuifies text
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
@@ -1327,5 +1328,30 @@ async def crypto(ctx, cryptocurrency: str):
                     await ctx.send("Cryptocurrency not found. Please try another.")
             else:
                 await ctx.send("Failed to retrieve data. Please try again later.")
-                
+
+@bot.command()
+async def uwuify(ctx, *, message: str):
+    """UwUifies a message with a chance to stutter the first word."""
+    await ctx.message.delete()
+    
+
+    words = message.split()
+    if words and random.random() < 0.3: 
+        words[0] = f"{words[0][0]}-{words[0][0]}-{words[0]}" #30% chance to stutter the first word
+    
+    #uwuifies the message
+    message = " ".join(words)
+    uwuified = (
+        message.replace('r', 'w')
+               .replace('l', 'w')
+               .replace('R', 'W')
+               .replace('L', 'W')
+               .replace("ove", "uv")
+               .replace("th", "ff")
+               .replace("you", "uu")
+               .replace("!", " uwu")
+    )
+    
+    await ctx.send(uwuified) #sends the uwuified message
+
 bot.run(TOKEN, log_handler=None)
