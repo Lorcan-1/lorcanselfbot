@@ -43,6 +43,7 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`massdm [message]`** dms every memeber in the memberlist with a message
 - **`crypto [currency]`** looks up the current value for a crypto currency
 - **`uwuify [message]`** uwuifies your message
+- **`nicknamespam`** changes your nickname repeatedly to a randomly generated 32 character name
 
 
 
