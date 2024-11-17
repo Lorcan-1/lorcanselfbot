@@ -25,6 +25,7 @@ import subprocess
 import platform
 from colorama import init, Fore, Style
 from googletrans import Translator, LANGUAGES
+import yfinance as yf
 init()
 
 def cls():
@@ -241,6 +242,7 @@ crypto [coin] - gets the price of a specified cryptocurrency
 uwuify [text] - uwuifies text
 nickname [nickname] [optional user] - changes your nickname or changes a users nickname
 nicknamespam - changes your nickname to a random 32 character string repeatedly
+stock [stock symbol] - gets the value of a specified stock
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
@@ -1387,4 +1389,17 @@ async def nicknamespam(ctx,):
         except discord.HTTPException as e:
             printwordwithgradient(f"An error occurred: {e}")
 
+@bot.command()
+async def stock(ctx, symbol: str):
+    """Gets the current price of a stock using Yahoo Finance API"""
+    try:
+        stock = yf.Ticker(symbol.upper())
+        price = stock.history(period="1d")["Close"][-1]
+
+        await ctx.send(f"**{symbol.upper()}** Current Price: ${price:.2f}")
+    except IndexError:
+        await ctx.send(f"No recent price data available for `{symbol.upper()}`. Please check the symbol is correct and try again")
+    except Exception as e:
+        printwordwithgradient(f"An error occurred: {e}")
+        
 bot.run(TOKEN, log_handler=None)
