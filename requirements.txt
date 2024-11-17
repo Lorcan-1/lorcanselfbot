@@ -12,3 +12,4 @@ httpx
 qrcode
 colorama
 googletrans
+yfinance
