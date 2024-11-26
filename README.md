@@ -44,7 +44,8 @@ This is a selfbot for Discord, developed using `discord.py-self`. This selfbot i
 - **`crypto [currency]`** looks up the current value for a crypto currency
 - **`uwuify [message]`** uwuifies your message
 - **`nicknamespam`** changes your nickname repeatedly to a randomly generated 32 character name
-- **`stock`** looks up the value of a stock using its symbol name
+- **`stock [symbol]`** looks up the value of a stock using its symbol name
+- **`imageupload [image]`** uploads an image using the gyazo api and sends the link back to you
 
 
 
