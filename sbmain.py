@@ -1341,7 +1341,7 @@ async def uwuify(ctx, *, message: str):
 
     words = message.split()
     if words and random.random() < 0.3: 
-        words[0] = f"{words[0][0]}-{words[0][0]}-{words[0]}" #30% chance to stutter the first word
+        words[0] = f"{words[0][0]}-{words[0][0]}-{words[0]}" #chance to stutter on first word or something
     
     #uwuifies the message
     message = " ".join(words)
@@ -1401,5 +1401,53 @@ async def stock(ctx, symbol: str):
         await ctx.send(f"No recent price data available for `{symbol.upper()}`. Please check the symbol is correct and try again")
     except Exception as e:
         printwordwithgradient(f"An error occurred: {e}")
+
+GYAZO_TOKEN = "XqnxOTs1QqoRBucE4hCA5iZSZtPb7Cw3hDuYK2mmyC8" #replace with your own gyazo token
+
+@bot.command()
+async def imageupload(ctx, image_url: str = None):
+    """Uploads an image to Gyazo using the Gyazo API.    Accepts either a URL as an argument or an attached image."""
+    await ctx.message.delete()
+
+    # checks if theres a url or attachment
+    if not image_url and ctx.message.attachments:
+        attachment = ctx.message.attachments[0]
+        if not any(attachment.filename.lower().endswith(ext) for ext in [".jpg", ".jpeg", ".png", ".gif", ".bmp"]):
+            await ctx.send("The attached file must be an image (jpg, jpeg, png, gif, bmp).")
+            return
+        image_url = attachment.url
+
+    # put an image mate
+    if not image_url:
+        await ctx.send("Please provide a valid image URL or attach an image.")
+        return
+
+    gyazo_url = "https://upload.gyazo.com/api/upload"
+
+    async with aiohttp.ClientSession() as session:
+        if image_url.startswith("http"):
+            
+            async with session.get(image_url) as img_response:
+                if img_response.status == 200:
+                    img_data = await img_response.read()
+                    
+                    
+                    form_data = aiohttp.FormData()
+                    form_data.add_field("access_token", GYAZO_TOKEN)
+                    form_data.add_field("imagedata", img_data, filename="upload.png", content_type="image/png")
+
+                    # post request to upload image
+                    async with session.post(gyazo_url, data=form_data) as response:
+                        if response.status == 200:
+                            data = await response.json()
+                            uploaded_image_url = data["url"]
+                            await ctx.send(f"Image uploaded here is the link: {uploaded_image_url}")
+                        else:
+                            error_message = await response.text()
+                            await ctx.send(f"Error: {error_message}")
+                else:
+                    await ctx.send("Failed to download image please provide a valid image URL")
+        else:
+            await ctx.send("Invalid image URL format. Please provide a valid image URL.")
         
 bot.run(TOKEN, log_handler=None)
