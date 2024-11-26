@@ -243,6 +243,7 @@ uwuify [text] - uwuifies text
 nickname [nickname] [optional user] - changes your nickname or changes a users nickname
 nicknamespam - changes your nickname to a random 32 character string repeatedly
 stock [stock symbol] - gets the value of a specified stock
+imageupload [image url/attachment] - uploads an image from a URL or attachment
 ```''')
     await asyncio.sleep(5)
     await direction.delete()
